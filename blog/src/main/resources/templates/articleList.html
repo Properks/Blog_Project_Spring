@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+    <title>Document</title>
+</head>
+<body>
+
+<div class="article-list-page-size-container">
+    <label for="article-list-page-size">Articles per page: </label>
+    <select name="Size" id="article-list-page-size" class="page-size">
+        <option value="10">10</option>
+        <option value="50">50</option>
+        <option value="100">100</option>
+    </select>
+</div>
+<div id="show-selected-category">
+<!--Content will be added with JS-->
+</div>
+<div id="article-list-searched-word-container">
+    Search Keyword:
+    <span id="article-list-searched-word">none</span>
+</div>
+<div class="article-list-container">
+    <div class="article-list-body-wrap">
+        <div class="article-list-id-wrap">No.</div>
+        <div class="article-list-title-wrap">title</div>
+        <div class="article-list-author-wrap">author</div>
+    </div>
+    <div class="article-list-body-container">
+        <div class="no-article" th:if="${articles.size()} == 0">No articles</div>
+        <div class="articles-list-body" th:if="${articles.size()} != 0" th:each="article : ${articles}">
+            <div id="article-list-id-thyme"
+                 th:text="${totalArticleSize} - 10 * (${currentPage} - 1) - ${articleStat.index}"></div>
+            <div id="article-list-title-thyme">
+                <a th:href="@{/article/{id}(id = ${article.id})}" th:text="${article.title}"></a>
+            </div>
+            <div id="article-list-author">
+                <div id="article-list-author-thyme" th:text="${article.author.getNicknameWithoutCode()}"></div>
+                <p class="article-list-author-hover" th:text="${article.author.nickname}"></p>
+            </div>
+        </div>
+    </div>
+    <div class="article-list-create-button-container">
+        <button type="button" id="article-list-create-article-btn"
+                th:onclick="|location.href='@{/new-article}'|">new article</button>
+    </div>
+    <div class="article-list-page-container" th:if="${articles.size()} != 0">
+        <input id="article-list-total-page" type="hidden" th:value="${totalPage}">
+        <div id="article-list-page-decrease">
+            <span class="material-symbols-outlined">
+                navigate_before
+            </span>
+        </div>
+        <div class="article-list-page-number" th:each="i : ${#numbers.sequence(1, totalPage)}">
+<!--            Repeat it from 1 to totalPage-->
+            <span th:attr="class=${i == currentPage} ? 'current-page' : 'other-page'" th:text="${i}"></span>
+        </div>
+        <div id="article-list-page-increase">
+            <span class="material-symbols-outlined">
+                navigate_next
+            </span>
+        </div>
+    </div>
+    <div class="article-list-search-article-container">
+        <div class="article-list-search-article-body">
+            <select name="search-category" id="article-list-search-category" >
+                <option value="titleContent">title + content</option>
+                <option value="writer">author</option>
+            </select>
+            <input id="article-list-search-parameter" type="text">
+            <button type="button" id="article-list-search-btn">search</button>
+        </div>
+    </div>
+</div>
+<!--articleStat =>
+default : {variable name} + Stat
+index : start with 0
+count : start with 1
+size : total size
+even, odd : whether number is even or odd (boolean)
+first, last : whether this is first or last (boolean)
+-->
+</body>
+</html>

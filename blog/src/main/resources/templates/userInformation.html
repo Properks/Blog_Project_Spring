@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Main Page</title>
+    <link rel="stylesheet" th:href="@{/css/information.css}">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+    <!--    Navigate before and after-->
+</head>
+<body>
+<div class="main-page-container">
+    <div class="top-header-container">
+        <div class="top-header-wrap">
+            <div class="home-page-button"><a th:href="@{/home}">blog</a></div>
+            <div class="btn-container" th:if="${loginIn}">
+                <input type="hidden" id="user-id" th:value="${loginIn.id}">
+                <div class="user-info-container">
+                    <div class="user-info-btn" th:text="|Username: ${loginIn.getNicknameWithoutCode()}|"
+                         th:attr="hover-text=${loginIn.nickname}">
+                    </div>
+                    <div id="home-page-user-hover-menu">
+                        <div>
+                            <a th:href="@{/home(nickname=${loginIn.nickname})}">my article</a>
+                        </div>
+                        <div>
+                            <a th:href="@{/user/info}">my information</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="logout-btn" th:onclick="|location.href='@{/logout}'|">logout</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="body-container">
+        <div class="main-page-img">
+            <img th:src="@{/img/backgroud-img.jpg}" alt="background-image">
+        </div>
+
+        <div class="information-container">
+            <div class="information-centered-container">
+                <div class="information-sidebar-container">
+                    <div class="information-sidebar" id="information-view">
+                        <a th:href="@{/user/info(tab='my_info')}">my info</a>
+                    </div>
+                    <div class="information-sidebar" id="information-change-password">
+                        <a th:href="@{/user/info(tab='change_password')}">change password </a>
+                    </div>
+                    <div class="information-sidebar" id="information-delete-account">
+                        <a th:href="@{/user/info(tab='delete_account')}">delete account</a>
+                    </div>
+                </div>
+                <div class="information-contents-container">
+                    <div class="information-myInfo" th:if="${tab} == 'my_info'">
+                        <div class="information-email-container">
+                            <label for="information-my-email">email: </label>
+                            <input type="text" id="information-my-email" th:value="${loginIn.email}" readonly>
+                        </div>
+
+                        <div class="information-nickname-container">
+                            <input type="hidden" id="information-original-nickname" th:value="${loginIn.nickname}">
+                            <label for="information-my-email">nickname: </label>
+                            <input type="text" id="information-my-nickname" name="nickname"
+                                   th:value="${loginIn.nicknameWithoutCode}"
+                                minlength="3" maxlength="20">
+                            #
+                            <input type="text" id="information-my-nickname-code" name="code"
+                                    th:value="${loginIn.nicknameCode}"
+                                   minlength="1" maxlength="5">
+                        </div>
+                        <div id="information-change-nickname-error-message">
+
+                        </div>
+                        <div class="information-change-nickname-btn-container">
+                            <button type="button" id="information-change-nickname-btn"> change nickname</button>
+                        </div>
+                    </div>
+
+                    <div class="information-change-password" th:if="${tab} == 'change_password'">
+                        <div class="information-current-password-container">
+                            <label for="information-current-password">current password: </label>
+                            <input type="password" id="information-current-password">
+                        </div>
+
+                        <div class="information-new-password-container">
+                            <label for="information-new-password">new password: </label>
+                            <input type="password" id="information-new-password">
+                        </div>
+
+                        <div class="information-check-new-password-container">
+                            <label for="information-check-new-password">check new password: </label>
+                            <input type="password" id="information-check-new-password">
+                        </div>
+
+                        <div id="information-change-password-error-message">
+
+                        </div>
+                        <button id="information-change-password-btn">change password</button>
+                    </div>
+
+                    <div class="information-delete-account-container" th:if="${tab} == 'delete_account'">
+                        <div class="information-delete-account-notice">
+                            <p id="information-delete-account-comment">If you delete your account now, all articles
+                                you've written so far will be deleted.<br>
+                                Are you sure you want to delete it?</p>
+
+                            <div class="information-delete-account-btn-container">
+                                <button type="button" id="information-delete-account-cancel-btn"
+                                        th:onclick="|location.href='@{/user/info(tab='my_info')}'|">cancel</button>
+                                <button type="button" id="information-delete-account-submit-btn">submit</button>
+                            </div>
+                        </div>
+                        <div class="information-delete-account-check-password-container">
+                            <div id="information-delete-account-check-password-comment">
+                                <label for="information-delete-account-check-password">Enter Password: </label>
+                                <input type="password" name="password" id="information-delete-account-check-password"
+                                       placeholder="password" autofocus>
+                                <button type="button" id="information-delete-account-check-password-btn">delete
+                                    account</button>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="foot-box">
+
+    </div>
+</div>
+<input type="hidden" id="error-message" th:if="${errorMessage}" th:value="${errorMessage}">
+<script th:src="@{/js/information.js}"></script>
+<script th:if="${errorMessage}">
+    alert(document.getElementById('error-message').value);
+</script>
+</body>
+</html>

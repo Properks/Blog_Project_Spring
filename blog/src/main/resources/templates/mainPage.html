@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Main Page</title>
+    <link rel="stylesheet" th:href="@{/css/mainPage.css}">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+<!--    Navigate before and after-->
+</head>
+<body>
+    <div class="main-page-container">
+        <div class="top-header-container">
+            <div class="top-header-wrap">
+                <div class="home-page-button"><a th:href="@{/home}">blog</a></div>
+                <div class="btn-container" th:if="${loginIn}">
+                    <input type="hidden" id="user-id" th:value="${loginIn.id}">
+                    <div class="user-info-container">
+                        <div class="user-info-btn" th:text="|Username: ${loginIn.getNicknameWithoutCode()}|"
+                        th:attr="hover-text=${loginIn.nickname}">
+                        </div>
+                        <div id="home-page-user-hover-menu">
+                            <div>
+                                <a th:href="@{/home(nickname=${loginIn.nickname})}">my article</a>
+                            </div>
+                            <div>
+                                <a th:href="@{/user/info}">my information</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="logout-btn" th:onclick="|location.href='@{/logout}'|">logout</div>
+                </div>
+                <div class="btn-container" th:unless="${loginIn}">
+                    <div class="login-btn"><a th:href="@{/login}">login</a></div>
+                    <div class="sign-up-btn"><a th:href="@{/signup}">sign up</a></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="body-container">
+            <div class="main-page-img">
+                    <img th:src="@{/img/backgroud-img.jpg}" alt="background-image">
+            </div>
+
+            <div class="contents-container">
+                <div class="sidebar-container">
+                    <div class="sidebar-title">
+                        <h3>side bar</h3>
+                    </div>
+                    <div id="sidebar-all-category">All</div>
+                    <div class="sidebar-content" th:if="${categories}">
+                        <div class="sidebar" th:each="category: ${categories}">
+                            <input type="hidden" class="category-id" th:value="${category.id}"
+                            th:attr="category-name=${category.name}">
+                            <script th:inline="javascript">
+                                {
+                                    let prefix = '';
+                                    for (var i = 0; i < [[${category.height}]]; i++) {
+                                        prefix += '&nbsp;&nbsp;\|&nbsp;&nbsp;';
+                                    }
+                                    document.write(prefix + [[${category.name}]]);
+                                }
+                            </script>
+                        </div>
+                    </div>
+                    <button type="button" id="create-sidebar-btn">new category</button>
+                </div>
+
+                <div class="article-container">
+                    <div class="article-title">
+                        <h3>articles</h3>
+                    </div>
+
+<!--                    article body-->
+                    <div class="article-body" th:if="${articles}">
+                        <div th:replace="articleList.html :: body"></div>
+                    </div>
+                    <div class="article-body" th:if="${viewArticle}">
+                        <div th:replace="articleView.html :: #article-view-container"></div>
+                        <div th:replace="articleView.html :: #article-view-button-container"></div>
+                    </div>
+                    <div class="article-body" th:if="${newArticle}">
+                        <div th:replace="newArticle.html :: #new-article-container"></div>
+                        <div th:replace="newArticle.html :: #new-article-button-container"></div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+
+        <div class="foot-box">
+
+        </div>
+    </div>
+    <input type="hidden" id="error-message" th:if="${error}" th:value="${error}">
+<script th:src="@{/js/mainPage.js}"></script>
+<script th:if="${error}">
+    alert(document.getElementById('error-message').value);
+</script>
+</body>
+</html>

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="../static/css/articleView.css">
+</head>
+<body>
+<div id="article-view-container" >
+    <article>
+        <input type="hidden" id="article-view-id" th:value="${viewArticle.id}">
+        <div class="article-view-title-container">
+            <h4 id="article-view-title" th:text="${viewArticle.title}"
+            th:onclick="|location.href='@{/article/{id} (id = ${viewArticle.id})}'|"></h4>
+            <h5 class="article-view-category" th:text="|Category: ${viewArticle.category.getName()}|"></h5>
+        </div>
+        <div class="article-view-author-container">
+            <p id="article-view-author" th:text="|Writer: ${viewArticle.author.getNicknameWithoutCode()}|"></p>
+            <p id="article-view-author-hover" th:text="${viewArticle.author.nickname}"></p>
+        </div>
+        <div class="article-view-time-container">
+            <p id="article-view-created-time"
+               th:text="|Created at: ${#temporals.format(viewArticle.createdAt, 'yyyy-MM-dd HH:mm')}|"></p>
+            <span th:if="${viewArticle.updatedAt} != ${viewArticle.createdAt}">
+                <span id="article-view-updated-time"
+                   th:text="|Updated at: ${#temporals.format(viewArticle.updatedAt, 'yyyy-MM-dd HH:mm')}|"></span>
+            </span>
+        </div>
+        <div class="article-view-content-container">
+            <section class="article-view-section">
+                <div th:each="line : ${#strings.arraySplit(viewArticle.content, '&#10')}">
+                    <p th:text="${line}"></p>
+                </div>
+            </section>
+        </div>
+    </article>
+</div>
+<div id="article-view-button-container">
+    <button type="button" id="article-view-delete-article-btn">delete</button>
+    <button type="button" id="article-view-modify-article-btn">modify</button>
+</div>
+
+</body>
+</html>
