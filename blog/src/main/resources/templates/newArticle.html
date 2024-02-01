@@ -17,7 +17,7 @@
             <select name="category" id="new-article-category">
                 <option class="new-article-categories"
                         th:if="${categories} != null" th:each="category : ${categories}"
-                        th:value="${category.path}" th:text="${category.name}"></option>
+                        th:value="${category.id}" th:text="${category.name}"></option>
             </select>
         </div>
         <div class="new-article-text-container">

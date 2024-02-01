@@ -47,7 +47,7 @@ if (modifyButton) {
         let articleId = document.getElementById('new-article-id').value;
         let articleTitle = document.getElementById('new-article-title').value;
         let articleContent = document.getElementById('new-article-content').value;
-        let categoryPath = document.getElementById('new-article-category').value;
+        let categoryId = document.getElementById('new-article-category').value;
 
         fetch('/api/article/' + articleId, {
             method : 'PUT',
@@ -57,7 +57,7 @@ if (modifyButton) {
             body : JSON.stringify({
                 title: articleTitle,
                 content: articleContent,
-                category: categoryPath
+                category: categoryId
             })
         })
             .then(response => {
@@ -84,7 +84,7 @@ if (createButton) {
     createButton.addEventListener('click', ()=> {
         let title = document.getElementById('new-article-title').value;
         let content = document.getElementById('new-article-content').value;
-        let category = document.getElementById('new-article-category').value;
+        let categoryId = document.getElementById('new-article-category').value;
 
         fetch('/api/article', {
             method: 'POST',
@@ -94,7 +94,7 @@ if (createButton) {
             body: JSON.stringify({
                 title: title,
                 content: content,
-                category: category
+                categoryId: categoryId
             })
         })
             .then(response => {
@@ -124,25 +124,31 @@ function isSameAuthor(nickname) {
 const beforePage = document.getElementById('article-list-page-decrease');
 const afterPage = document.getElementById('article-list-page-increase');
 const totalPage = document.getElementById('article-list-total-page');
-const currentPage = document.querySelector('.current-page');
+const currentPage = document.querySelector('.current-page').textContent;
 const otherPage = document.querySelectorAll('.other-page')
 
-if (beforePage && currentPage.textContent !== '1') {
+if (beforePage && currentPage !== '1') {
     beforePage.addEventListener('click', () => {
-        location.replace('/home?page=' + (parseInt(currentPage.textContent) - 1));
+        let url = new URLSearchParams(location.search);
+        url.set('page', (parseInt(currentPage) - 1).toString());
+        location.replace('/home?' + url.toString());
     })
 }
 
-if (afterPage && currentPage.textContent !== totalPage.value) {
+if (afterPage && currentPage !== totalPage.value) {
     afterPage.addEventListener('click', () => {
-        location.replace('/home?page=' + (parseInt(currentPage.textContent) + 1));
+        let url = new URLSearchParams(location.search);
+        url.set('page', (parseInt(currentPage) + 1).toString())
+        location.replace('/home?' + url.toString());
     })
 }
 
 if (otherPage) {
     otherPage.forEach(element => {
         element.addEventListener('click', () => {
-            location.replace('home?page=' + element.textContent);
+            let url = new URLSearchParams(location.search);
+            url.set('page', element.textContent);
+            location.replace('/home?' + url.toString());
         })
     })
 }
@@ -156,11 +162,14 @@ if (articlesPerPage) {
     } else {articlesPerPage.value = 10;}
 
     articlesPerPage.addEventListener('change', () => {
-        location.replace("/home?page=" + currentPage.textContent + "&size=" + articlesPerPage.value);
+        let url = new URLSearchParams(location.search);
+        url.set('size', articlesPerPage.value);
+        location.replace("/home?" + url.toString());
     })
 }
 
 // Add Category with btn
+//FIXME: fix how to get parent id
 const categoryButton = document.getElementById("create-sidebar-btn");
 if (categoryButton) {
     categoryButton.addEventListener('click', () => {
@@ -199,9 +208,10 @@ const sidebarElements = document.querySelectorAll(".sidebar");
 if (sidebarElements) {
     for (const sidebarElement of sidebarElements) {
         sidebarElement.addEventListener('click', () => {
-            let categoryId = sidebarElement.querySelector(".category-id").value;
-            location.replace("/home?size=" + articlesPerPage.value + "&categoryId=" +
-                categoryId)
+            let categoryId = sidebarElement.querySelector("#category-id").value;
+            let url = new URLSearchParams(location.search);
+            url.set('categoryId', categoryId);
+            location.replace("/home?" + url.toString())
         })
     }
 }
@@ -225,7 +235,7 @@ const showCategoryInList = document.getElementById('show-selected-category');
 if (showCategoryInList) {
     if (categoryInUrl) {
         let categoryId =
-            Array.from(sidebarElements).map(item => item.querySelector('.category-id'))
+            Array.from(sidebarElements).map(item => item.querySelector('#category-id'))
                 .find(item => item.value === categoryInUrl)
         showCategoryInList.textContent = 'Category: ' + categoryId.getAttribute('category-name');
     } else {
@@ -240,14 +250,26 @@ if (searchButton) {
         let searchCategory = document.getElementById('article-list-search-category').value;
         let searchQuery = document.getElementById('article-list-search-parameter').value;
         let url = new URLSearchParams(location.search);
+        let hasQueryInURL = url.has('titleContent') || url.has('writer');
         if (searchQuery !== "") {
-            location.replace('/home?' + searchCategory + '=' + searchQuery);
+            addSearchQueryInURL(url, searchCategory, searchQuery)
+            location.replace('/home?' + url.toString());
         }
-        else if (url.has('titleContent') || url.has('writer')) {
+        else if (hasQueryInURL) {
             url.delete((url.has('titleContent')) ? 'titleContent' : 'writer');
             location.replace('/home?' + url.toString())
         }
     })
+}
+
+function addSearchQueryInURL(urlParam, category, query) {
+    if (urlParam.has('titleContent') && category === 'writer') {
+        urlParam.delete('titleContent');
+    }
+    else if (urlParam.has('writer') && category === 'titleContent') {
+        urlParam.delete('writer');
+    }
+    urlParam.set(category, query);
 }
 
 //Show searched word

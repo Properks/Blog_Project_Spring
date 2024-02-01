@@ -52,7 +52,7 @@
                     <div id="sidebar-all-category">All</div>
                     <div class="sidebar-content" th:if="${categories}">
                         <div class="sidebar" th:each="category: ${categories}">
-                            <input type="hidden" class="category-id" th:value="${category.id}"
+                            <input type="hidden" id="category-id" th:value="${category.id}"
                             th:attr="category-name=${category.name}">
                             <script th:inline="javascript">
                                 {
