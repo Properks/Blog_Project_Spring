@@ -9,6 +9,13 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Getter
 public class CreateCategoryRequest {
+    /**
+     * The ID of parent category
+     */
     private Long parentId;
+
+    /**
+     * The name of new category
+     */
     private String name;
 }

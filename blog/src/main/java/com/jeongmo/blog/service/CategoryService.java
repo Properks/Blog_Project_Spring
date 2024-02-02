@@ -41,7 +41,7 @@ public class CategoryService {
     /**
      * Find category with id
      *
-     *
+     * @param id The id of category which you want to find
      */
     public Category findCategory(Long id) {
         return categoryRepository.findById(id).orElseThrow(() ->
@@ -122,9 +122,7 @@ public class CategoryService {
     }
 
     /**
-     * Check whether path is valid or not except child. Split path to category names and check ith category has (i +
-     * 1)th category
-     * as child (for i = 0, 1, ....)
+     * Check whether path is valid
      *
      * @param id The id of category which you want to check
      * @return The boolean, true: valid, false: category doesn't exist
