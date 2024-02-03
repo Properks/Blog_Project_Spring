@@ -51,19 +51,16 @@
                     </div>
                     <div id="sidebar-all-category">All</div>
                     <div class="sidebar-content" th:if="${categories}">
-                        <div class="sidebar" th:each="category: ${categories}">
+                        <ul class="sidebar" th:each="category : ${categories}">
                             <input type="hidden" id="category-id" th:value="${category.id}"
-                            th:attr="category-name=${category.name}">
-                            <script th:inline="javascript">
-                                {
-                                    let prefix = '';
-                                    for (var i = 0; i < [[${category.height}]]; i++) {
-                                        prefix += '&nbsp;&nbsp;\|&nbsp;&nbsp;';
-                                    }
-                                    document.write(prefix + [[${category.name}]]);
-                                }
-                            </script>
-                        </div>
+                                   th:attr="category-name=${category.name}">
+                            <li>
+                                <input type="hidden" th:value="${category.id}">
+                                <span th:text="${category.name}"></span>
+                                <ul th:if="${category.children}"
+                                    th:replace="tree :: recursiveTree(${category.children})"></ul>
+                            </li>
+                        </ul>
                     </div>
                     <button type="button" id="create-sidebar-btn">new category</button>
                 </div>

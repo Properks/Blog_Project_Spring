@@ -112,7 +112,7 @@ public class ArticleViewController {
     private void addAllCategory(Model model) {
         if (!categoryService.isEmpty()) {
             model.addAttribute("categories",
-                    categoryService.findAllCategory()
+                    categoryService.getRootCategories()
                             .stream()
                             .map(CategoryResponse::new)
                             .toList());

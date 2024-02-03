@@ -107,6 +107,11 @@ public class CategoryService {
         return updatedCategory.update(request.getNewName());
     }
 
+    @Transactional(readOnly = true)
+    public List<Category> getRootCategories() {
+        return categoryRepository.findRootCategories();
+    }
+
     /**
      * Check whether category exists or not
      *

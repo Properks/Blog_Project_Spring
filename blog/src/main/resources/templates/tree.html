@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<ul th:fragment="recursiveTree(categories)">
+    <li th:each="category : ${categories}">
+        <input type="hidden" th:value="${category.id}" th:attr="category-name=${category.name}">
+        <span th:text="${category.name}"></span>
+        <ul th:if="${category.children}" th:replace="tree :: recursiveTree(${category.children})"></ul>
+    </li>
+</ul>
+</body>
+</html>
