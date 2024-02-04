@@ -168,20 +168,20 @@ if (articlesPerPage) {
     })
 }
 
-// Add Category with btn
+// Add root category
 //FIXME: fix how to get parent id
 const categoryButton = document.getElementById("create-sidebar-btn");
 if (categoryButton) {
     categoryButton.addEventListener('click', () => {
-        let inputPath = prompt("Enter a category ex)article/article1/article2");
-        let path = inputPath.replace(/\//g, '_');
+        let name = prompt("Enter a new category");
         fetch('/api/category', {
             method: 'POST',
             headers: {
                 'Content-type': 'application/json'
             },
             body: JSON.stringify({
-                pathOfCategory: path
+                parentId: null,
+                name: name
             })
         })
         // fetch('/api/category/' + path, {method: 'POST'})
@@ -203,8 +203,48 @@ if (categoryButton) {
     })
 }
 
+//Add child category
+const createButtons = document.querySelectorAll('.create-category-btn');
+if (createButtons) {
+
+    createButtons.forEach(function (button) {
+        button.addEventListener('click', function () {
+            let parentLi = button.closest('li');
+            let parentId = parentLi.querySelector('input').value;
+            console.log(parentId);
+
+            let name = prompt("Enter category name");
+            console.log(name)
+            fetch('/api/category', {
+                method: 'POST',
+                headers: {
+                    'Content-type': 'application/json'
+                },
+                body: JSON.stringify({
+                    parentId: parentId,
+                    name: name
+                })
+            })
+                .then(response => {
+                    if (response.status === 201) {
+                        alert("Success to create category");
+                        location.replace('/home');
+                    }
+                    else if (response.status === 400) {
+                        alert('Fail to create category (Bad Request)');
+                        location.replace('/home');
+                    }
+                    else {
+                        alert('Fail to create category (Unknown error: ' + response.status + ')');
+                        location.replace('/home');
+                    }
+                })
+        });
+    });
+}
+
 //category select
-const sidebarElements = document.querySelectorAll(".sidebar");
+const sidebarElements = document.querySelectorAll(".category-name");
 if (sidebarElements) {
     for (const sidebarElement of sidebarElements) {
         sidebarElement.addEventListener('click', () => {

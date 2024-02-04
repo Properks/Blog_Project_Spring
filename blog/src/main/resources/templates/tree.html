@@ -9,6 +9,7 @@
     <li th:each="category : ${categories}">
         <input type="hidden" th:value="${category.id}" th:attr="category-name=${category.name}">
         <span th:text="${category.name}"></span>
+        <span class="create-category-btn">+</span>
         <ul th:if="${category.children}" th:replace="tree :: recursiveTree(${category.children})"></ul>
     </li>
 </ul>
