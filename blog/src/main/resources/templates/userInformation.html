@@ -135,6 +135,7 @@
 </div>
 <input type="hidden" id="error-message" th:if="${errorMessage}" th:value="${errorMessage}">
 <script th:src="@{/js/information.js}"></script>
+<script th:src="@{/js/background.js}"></script>
 <script th:if="${errorMessage}">
     alert(document.getElementById('error-message').value);
 </script>

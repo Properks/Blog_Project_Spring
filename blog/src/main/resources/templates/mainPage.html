@@ -53,10 +53,8 @@
                     <div id="sidebar-all-category">All</div>
                     <div class="sidebar-content" th:if="${categories}">
                         <ul class="sidebar" th:each="category : ${categories}">
-                            <input type="hidden" id="category-id" th:value="${category.id}"
-                                   th:attr="category-name=${category.name}">
                             <li>
-                                <input type="hidden" th:value="${category.id}">
+                                <input type="hidden" class="category-id" th:value="${category.id}">
                                 <span class="category-name" th:text="${category.name}"></span>
                                 <span class="create-category-btn">+</span>
                                 <ul th:if="${category.children}"
@@ -96,6 +94,9 @@
     </div>
     <input type="hidden" id="error-message" th:if="${error}" th:value="${error}">
 <script th:src="@{/js/mainPage.js}"></script>
+<script th:src="@{/js/background.js}"></script>
+<script th:src="@{/js/sidebar.js}"></script>
+<script th:src="@{/js/articleList.js}"></script>
 <script th:if="${error}">
     alert(document.getElementById('error-message').value);
 </script>

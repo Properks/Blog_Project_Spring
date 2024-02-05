@@ -7,8 +7,8 @@
 <body>
 <ul th:fragment="recursiveTree(categories)">
     <li th:each="category : ${categories}">
-        <input type="hidden" th:value="${category.id}" th:attr="category-name=${category.name}">
-        <span th:text="${category.name}"></span>
+        <input class="category-id" type="hidden" th:value="${category.id}">
+        <span class="category-name" th:text="${category.name}"></span>
         <span class="create-category-btn">+</span>
         <ul th:if="${category.children}" th:replace="tree :: recursiveTree(${category.children})"></ul>
     </li>
