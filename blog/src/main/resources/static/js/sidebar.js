@@ -86,19 +86,27 @@ if (sidebarElements) {
 }
 
 //Show category in article list
-//FIXME: It has error except first element.
 const categoryInUrl = new URLSearchParams(location.search).get('categoryId');
 const showCategoryInList = document.getElementById('show-selected-category');
 if (showCategoryInList) {
     if (categoryInUrl) {
-        let idElements = document.querySelector('.category-id');
-        let categoryId = Array(idElements).find(item => item.value === categoryInUrl);
-        let liElement = categoryId.closest('li');
-        let categoryName = liElement.querySelector('.category-name').textContent;
+        let categoryName = findCategoryNameWithId(categoryInUrl);
         showCategoryInList.textContent = 'Category: ' + categoryName;
     } else {
         showCategoryInList.textContent = 'Category: All';
     }
+}
+
+//Get category name with category id
+function findCategoryNameWithId(categoryId) {
+    let idElements = document.querySelectorAll('.category-id');
+    for (const element of idElements) {
+        if (element.value === categoryId) {
+            let liElement = element.closest('li');
+            return liElement.querySelector('.category-name').textContent;
+        }
+    }
+    return null;
 }
 
 //All category
