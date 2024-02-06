@@ -99,14 +99,9 @@ if (showCategoryInList) {
 
 //Get category name with category id
 function findCategoryNameWithId(categoryId) {
-    let idElements = document.querySelectorAll('.category-id');
-    for (const element of idElements) {
-        if (element.value === categoryId) {
-            let liElement = element.closest('li');
-            return liElement.querySelector('.category-name').textContent;
-        }
-    }
-    return null;
+    let idElements = document.querySelector('.category-id[value="' + categoryId + '"]');
+    let liElement = idElements.closest('li');
+    return liElement.querySelector('.category-name').textContent;
 }
 
 //All category
