@@ -14,4 +14,7 @@
 .sidebar-container, .article-container {position:relative;}
 .article-title, .article-body {margin: 0 auto;}
 .create-category-btn {float:right;}
-#create-sidebar-btn {margin:5px; position:absolute; bottom:0; right:0; text-transform: capitalize}
+
+.sidebar-button-container {margin:5px; position:absolute; bottom:0; right:0; text-transform: capitalize}
+#create-category-btn {cursor: pointer;}
+#sidebar-edit-btn, #sidebar-edit-done-btn {float: right;}
