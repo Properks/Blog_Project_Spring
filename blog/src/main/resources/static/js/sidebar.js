@@ -39,34 +39,34 @@ if (createButtons) {
         button.addEventListener('click', function () {
             let parentLi = button.closest('li');
             let parentId = parentLi.querySelector('input').value;
-            console.log(parentId);
 
             let name = prompt("Enter category name");
-            console.log(name)
-            fetch('/api/category', {
-                method: 'POST',
-                headers: {
-                    'Content-type': 'application/json'
-                },
-                body: JSON.stringify({
-                    parentId: parentId,
-                    name: name
+            if (name !== "") {
+                fetch('/api/category', {
+                    method: 'POST',
+                    headers: {
+                        'Content-type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        parentId: parentId,
+                        name: name
+                    })
                 })
-            })
-                .then(response => {
-                    if (response.status === 201) {
-                        alert("Success to create category");
-                        location.replace('/home');
-                    }
-                    else if (response.status === 400) {
-                        alert('Fail to create category (Bad Request)');
-                        location.replace('/home');
-                    }
-                    else {
-                        alert('Fail to create category (Unknown error: ' + response.status + ')');
-                        location.replace('/home');
-                    }
-                })
+                    .then(response => {
+                        if (response.status === 201) {
+                            alert("Success to create category");
+                            location.replace('/home');
+                        }
+                        else if (response.status === 400) {
+                            alert('Fail to create category (Bad Request)');
+                            location.replace('/home');
+                        }
+                        else {
+                            alert('Fail to create category (Unknown error: ' + response.status + ')');
+                            location.replace('/home');
+                        }
+                    })
+            }
         });
     });
 }
@@ -115,5 +115,42 @@ if (allCategory) {
         }
         location.replace('/home?' + url.toString());
     })
+}
+
+//Edit mode
+let isEditMode = false;
+const editButton = document.getElementById('sidebar-edit-btn');
+const editDoneButton = document.getElementById('sidebar-edit-done-btn');
+const newCategoryButton = document.getElementById('create-sidebar-btn');
+if (userInfo) {
+    editButton.addEventListener('click', () => {
+        openEditMode()
+    })
+
+    editDoneButton.addEventListener('click', () => {
+        closeEditMode()
+    })
+}
+
+function hideElement(element) {
+    element.style.display = 'none';
+}
+
+function showElement(element) {
+    element.style.display = 'block';
+}
+
+function openEditMode() {
+    createButtons.forEach(item => showElement(item));
+    showElement(newCategoryButton);
+    showElement(editDoneButton);
+    hideElement(editButton);
+}
+
+function closeEditMode() {
+    createButtons.forEach(item => hideElement(item));
+    hideElement(newCategoryButton);
+    hideElement(editDoneButton);
+    showElement(editButton);
 }
 

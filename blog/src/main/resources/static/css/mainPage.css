@@ -13,8 +13,8 @@
 
 .sidebar-container, .article-container {position:relative;}
 .article-title, .article-body {margin: 0 auto;}
-.create-category-btn {float:right;}
+.create-category-btn {float:right; display: none;}
 
 .sidebar-button-container {margin:5px; position:absolute; bottom:0; right:0; text-transform: capitalize}
-#create-category-btn {cursor: pointer;}
-#sidebar-edit-btn, #sidebar-edit-done-btn {float: right;}
+#create-sidebar-btn {cursor: pointer; display: none;}
+#sidebar-edit-btn, #sidebar-edit-done-btn {float: right; display: none;}
