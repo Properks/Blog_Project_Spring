@@ -118,11 +118,12 @@ if (allCategory) {
 }
 
 //Edit mode
-let isEditMode = false;
 const editButton = document.getElementById('sidebar-edit-btn');
 const editDoneButton = document.getElementById('sidebar-edit-done-btn');
 const newCategoryButton = document.getElementById('create-sidebar-btn');
+const deleteCategoryButton = document.querySelectorAll('.delete-category-btn');
 if (userInfo) {
+    showElement(editButton);
     editButton.addEventListener('click', () => {
         openEditMode()
     })
@@ -141,6 +142,7 @@ function showElement(element) {
 }
 
 function openEditMode() {
+    deleteCategoryButton.forEach(item => showElement(item))
     createButtons.forEach(item => showElement(item));
     showElement(newCategoryButton);
     showElement(editDoneButton);
@@ -148,6 +150,7 @@ function openEditMode() {
 }
 
 function closeEditMode() {
+    deleteCategoryButton.forEach(item => showElement(item))
     createButtons.forEach(item => hideElement(item));
     hideElement(newCategoryButton);
     hideElement(editDoneButton);

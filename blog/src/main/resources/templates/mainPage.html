@@ -56,6 +56,7 @@
                             <li>
                                 <input type="hidden" class="category-id" th:value="${category.id}">
                                 <span class="category-name" th:text="${category.name}"></span>
+                                <span class="delete-category-btn" th:unless="${category.children}">-</span>
                                 <span class="create-category-btn">+</span>
                                 <ul th:if="${category.children}"
                                     th:replace="tree :: recursiveTree(${category.children})"></ul>

@@ -22,7 +22,9 @@ public class CategoryResponse {
         this.name = category.getName();
         this.height = TreeUtilForCategory.getHeight(category);
         this.path = category.getPath();
-        this.children = category.getChildren().stream().map(CategoryResponse::new).toList();
+        this.children = (category.getChildren() == null) ?
+                null :
+                category.getChildren().stream().map(CategoryResponse::new).toList();
     }
 
 }
