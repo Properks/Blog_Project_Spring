@@ -64,6 +64,7 @@ public class ArticleViewController {
 
         // Set page
         model.addAttribute("totalArticleSize", articles.size());
+        model.addAttribute("pageSize", size);
         model.addAttribute("totalPage", (articles.size() - 1) / size + 1);
         model.addAttribute("currentPage", page);
         return MAIN;

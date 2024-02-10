@@ -41,6 +41,7 @@ if (createButtons) {
             let parentId = parentLi.querySelector('input').value;
 
             let name = prompt("Enter category name");
+            let currentURL = location.href;
             if (name !== "") {
                 fetch('/api/category', {
                     method: 'POST',
@@ -55,20 +56,50 @@ if (createButtons) {
                     .then(response => {
                         if (response.status === 201) {
                             alert("Success to create category");
-                            location.replace('/home');
+                            location.replace(currentURL);
                         }
                         else if (response.status === 400) {
                             alert('Fail to create category (Bad Request)');
-                            location.replace('/home');
+                            location.replace(currentURL);
                         }
                         else {
                             alert('Fail to create category (Unknown error: ' + response.status + ')');
-                            location.replace('/home');
+                            location.replace(currentURL);
                         }
                     })
             }
         });
     });
+}
+
+//Delete category
+const deleteButtons = document.querySelectorAll('.delete-category-btn');
+if (deleteButtons) {
+    deleteButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            let liElement = button.closest('li');
+            let categoryId = liElement.querySelector('.category-id').value;
+            let categoryName = findCategoryNameWithId(categoryId);
+            let currentURL = location.href;
+            if (confirm("Are you sure you want to delete " + categoryName + "?")) {
+                fetch('/api/category/' + categoryId , {method: 'DELETE'})
+                    .then(response => {
+                        if (response.status === 200) {
+                            alert('Success to delete category');
+                            location.replace(currentURL);
+                        }
+                        else if (response.status === 400) {
+                            alert('Fail to delete category (Bad Request)');
+                            location.replace(currentURL);
+                        }
+                        else {
+                            alert('Fail to delete category (Unknown error: ' + response.status + ')');
+                            location.replace(currentURL);
+                        }
+                    })
+            }
+        })
+    })
 }
 
 //category select
