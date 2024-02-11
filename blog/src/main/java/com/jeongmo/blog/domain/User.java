@@ -47,6 +47,9 @@ public class User implements UserDetails{
     @OneToMany(mappedBy = "author")
     private List<Article> articles;
 
+    @OneToMany(mappedBy = "author")
+    private List<Comment> comments;
+
     /**
      * The constructor of User
      *

@@ -181,7 +181,7 @@ function openEditMode() {
 }
 
 function closeEditMode() {
-    deleteCategoryButton.forEach(item => showElement(item))
+    deleteCategoryButton.forEach(item => hideElement(item))
     createButtons.forEach(item => hideElement(item));
     hideElement(newCategoryButton);
     hideElement(editDoneButton);
