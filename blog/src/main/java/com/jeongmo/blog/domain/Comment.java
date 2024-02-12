@@ -2,8 +2,10 @@ package com.jeongmo.blog.domain;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -15,7 +17,7 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EntityListeners(AuditingEntityListener.class)
 @Getter
-public class Comment {
+public class Comment implements Comparable<Comment>{
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -31,20 +33,20 @@ public class Comment {
      * The Linked article
      */
     @ManyToOne
-    @JoinColumn(name = "article_id")
+    @JoinColumn(name = "article_id", updatable = false)
     private Article article;
 
     /**
      * Person who write this
      */
     @ManyToOne
-    @JoinColumn(name = "author_id")
+    @JoinColumn(name = "author_id", updatable = false)
     private User author;
 
     /**
      * The replies
      */
-    @OneToMany(mappedBy = "parent")
+    @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL)
     private List<Comment> replies;
 
     @ManyToOne
@@ -56,4 +58,20 @@ public class Comment {
     @LastModifiedDate
     private LocalDateTime updatedAt;
 
+    @Builder
+    public Comment(String content, Article article, User author, Comment parent) {
+        this.content = content;
+        this.article = article;
+        this.author = author;
+        this.parent = parent;
+    }
+
+    @Override
+    public int compareTo(@NotNull Comment o) {
+        return this.createdAt.compareTo(o.createdAt);
+    }
+
+    public void update(String content) {
+        this.content = content;
+    }
 }
