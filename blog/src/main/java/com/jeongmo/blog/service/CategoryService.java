@@ -155,10 +155,13 @@ public class CategoryService {
      * @return The sorted list
      */
     private List<Category> addChildrenRecursive(List<Category> list, List<Category> children) {
+
+        if (!children.isEmpty()) { // when children is empty, return empty list
         // Recursively sort the children's children
-        for (Category child : children) {
-            list.add(child);
-            addChildrenRecursive(list, child.getChildren());
+            for (Category child : children) {
+                list.add(child);
+                addChildrenRecursive(list, child.getChildren());
+            }
         }
 
         return list; // Return the sorted list
