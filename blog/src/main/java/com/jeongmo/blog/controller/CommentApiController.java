@@ -52,6 +52,34 @@ public class CommentApiController {
         }
     }
 
+    @GetMapping("/api/comment/article/{articleId}")
+    public ResponseEntity<List<CommentResponse>> getCommentWithArticle(@PathVariable Long articleId) {
+        try {
+            List<CommentResponse> responses = commentService.getCommentsWithArticle(articleId)
+                    .stream()
+                    .map(CommentResponse::new)
+                    .toList();
+            return ResponseEntity.ok().body(responses);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @GetMapping("/api/comment/author/{userId}")
+    public ResponseEntity<List<CommentResponse>> getCommentWithAuthor(@PathVariable Long userId) {
+        try {
+            List<CommentResponse> responses = commentService.getCommentWithAuthor(userId)
+                    .stream()
+                    .map(CommentResponse::new)
+                    .toList();
+            return ResponseEntity.ok().body(responses);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
     @DeleteMapping("/api/comment/{id}")
     public ResponseEntity<Void> deleteComment(@PathVariable Long id) {
         try{
