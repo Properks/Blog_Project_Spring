@@ -27,6 +27,7 @@ public class Comment implements Comparable<Comment>{
     /**
      * The content
      */
+    @Column(name = "content", columnDefinition = "MEDIUMTEXT")
     private String content;
 
     /**
