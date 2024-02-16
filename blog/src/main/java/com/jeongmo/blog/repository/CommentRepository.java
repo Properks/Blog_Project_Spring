@@ -10,7 +10,7 @@ import java.util.Optional;
 
 @Repository
 public interface CommentRepository extends JpaRepository<Comment, Long> {
-    @Query("SELECT comment FROM Comment comment WHERE comment.parent IS NULL AND comment.article.id = :#{articleId}")
+    @Query("SELECT c FROM Comment c WHERE c.parent IS NULL AND c.article.id = :articleId")
     List<Comment> findRootComments(Long articleId);
 
     Optional<List<Comment>> findAllByAuthor_Id(Long id);

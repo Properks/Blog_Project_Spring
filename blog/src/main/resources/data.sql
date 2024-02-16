@@ -22,6 +22,19 @@ CREATE TABLE IF NOT EXISTS article (
                          FOREIGN KEY (author_id) REFERENCES User(id),
                          FOREIGN KEY (category_id) REFERENCES Category(id)
 );
+CREATE TABLE IF NOT EXISTS comment (
+                         id BIGINT AUTO_INCREMENT PRIMARY KEY,
+                         content MEDIUMTEXT,
+                         article_id BIGINT,
+                         author_id BIGINT,
+                         parent_id BIGINT,
+                         created_at DATETIME,
+                         updated_at DATETIME,
+                         FOREIGN KEY (article_id) REFERENCES article(id),
+                         FOREIGN KEY (author_id) REFERENCES user(id),
+                         FOREIGN KEY (parent_id) REFERENCES comment(id)
+);
+
 
 
 --
