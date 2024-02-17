@@ -49,6 +49,11 @@ class CommentServiceTest {
     Article article1;
     Article article2;
 
+    Comment comment1;
+    Comment comment2;
+    Comment comment3;
+    Comment reply1;
+
     @BeforeEach
     void init() {
         commentRepository.deleteAll();
@@ -96,7 +101,30 @@ class CommentServiceTest {
     }
 
     private void addComment() {
-
+        comment1 = commentRepository.save(Comment.builder() //first comment in article1
+                .content("comment1")
+                .parent(null)
+                .author(user)
+                .article(article1)
+                .build());
+        comment2 = commentRepository.save(Comment.builder() //second comment in article1
+                .content("comment2")
+                .parent(null)
+                .author(user2)
+                .article(article1)
+                .build());
+        reply1 = commentRepository.save(Comment.builder() //first reply in article1
+                .content("reply1")
+                .parent(comment1)
+                .author(user2)
+                .article(article1)
+                .build());
+        comment3 = commentRepository.save(Comment.builder() //first comment in article2
+                .content("comment3")
+                .parent(null)
+                .author(user)
+                .article(article2)
+                .build());
     }
 
 
@@ -119,14 +147,88 @@ class CommentServiceTest {
 
     @Test
     void getComment() {
+        //given
+        addComment();
+        final Long commentId = comment1.getId();
+        final Long replyId = reply1.getId();
+
+        //when
+        Comment foundComment = commentService.getComment(commentId);
+        Comment foundReply = commentService.getComment(replyId);
+
+        //then
+        assertThat(foundComment.getId()).isEqualTo(comment1.getId());
+        assertThat(foundComment.getContent()).isEqualTo(comment1.getContent());
+        assertThat(foundComment.getParent()).isNull();
+        assertThat(foundComment.getAuthor().getId()).isEqualTo(comment1.getAuthor().getId());
+        assertThat(foundComment.getArticle().getId()).isEqualTo(comment1.getArticle().getId());
+
+        assertThat(foundReply.getId()).isEqualTo(reply1.getId());
+        assertThat(foundReply.getContent()).isEqualTo(reply1.getContent());
+        assertThat(foundReply.getParent().getId()).isEqualTo(reply1.getParent().getId());
+        assertThat(foundReply.getAuthor().getId()).isEqualTo(reply1.getAuthor().getId());
+        assertThat(foundReply.getArticle().getId()).isEqualTo(reply1.getArticle().getId());
     }
 
     @Test
     void getComments() {
+        //given
+        addComment();
+
+        //when
+        List<Comment> comments = commentService.getComments();
+
+        //then
+        assertThat(comments).hasSize(4);
+
+        assertThat(comments.get(0).getId()).isEqualTo(comment1.getId());
+        assertThat(comments.get(0).getContent()).isEqualTo(comment1.getContent());
+        assertThat(comments.get(0).getAuthor().getId()).isEqualTo(comment1.getAuthor().getId());
+        assertThat(comments.get(0).getArticle().getId()).isEqualTo(comment1.getArticle().getId());
+
+        assertThat(comments.get(1).getId()).isEqualTo(comment2.getId());
+        assertThat(comments.get(1).getContent()).isEqualTo(comment2.getContent());
+        assertThat(comments.get(1).getAuthor().getId()).isEqualTo(comment2.getAuthor().getId());
+        assertThat(comments.get(1).getArticle().getId()).isEqualTo(comment2.getArticle().getId());
+
+        assertThat(comments.get(2).getId()).isEqualTo(reply1.getId());
+        assertThat(comments.get(2).getContent()).isEqualTo(reply1.getContent());
+        assertThat(comments.get(2).getAuthor().getId()).isEqualTo(reply1.getAuthor().getId());
+        assertThat(comments.get(2).getArticle().getId()).isEqualTo(reply1.getArticle().getId());
+
+        assertThat(comments.get(3).getId()).isEqualTo(comment3.getId());
+        assertThat(comments.get(3).getContent()).isEqualTo(comment3.getContent());
+        assertThat(comments.get(3).getAuthor().getId()).isEqualTo(comment3.getAuthor().getId());
+        assertThat(comments.get(3).getArticle().getId()).isEqualTo(comment3.getArticle().getId());
     }
 
     @Test
     void getCommentsWithArticle() {
+        //given
+        addComment();
+        final Long articleId = article1.getId();
+
+        //when
+        List<Comment> comments = commentService.getCommentsWithArticle(articleId);
+
+        //then
+        assertThat(comments).hasSize(3);
+
+        assertThat(comments.get(0).getId()).isEqualTo(comment1.getId());
+        assertThat(comments.get(0).getContent()).isEqualTo(comment1.getContent());
+        assertThat(comments.get(0).getAuthor().getId()).isEqualTo(comment1.getAuthor().getId());
+        assertThat(comments.get(0).getArticle().getId()).isEqualTo(comment1.getArticle().getId());
+
+        assertThat(comments.get(1).getId()).isEqualTo(reply1.getId()); // chronological order
+        assertThat(comments.get(1).getContent()).isEqualTo(reply1.getContent());
+        assertThat(comments.get(1).getAuthor().getId()).isEqualTo(reply1.getAuthor().getId());
+        assertThat(comments.get(1).getArticle().getId()).isEqualTo(reply1.getArticle().getId());
+
+        assertThat(comments.get(2).getId()).isEqualTo(comment2.getId());
+        assertThat(comments.get(2).getContent()).isEqualTo(comment2.getContent());
+        assertThat(comments.get(2).getAuthor().getId()).isEqualTo(comment2.getAuthor().getId());
+        assertThat(comments.get(2).getArticle().getId()).isEqualTo(comment2.getArticle().getId());
+
     }
 
     @Test
