@@ -80,12 +80,14 @@ public class CommentService {
     /**
      *  Get all comments of specific user.
      * @param userId The id of user
-     * @return The all comments of user
+     * @return The all comments of user (chronological order)
      */
     public List<Comment> getCommentWithAuthor(Long userId) {
-        return commentRepository.findAllByAuthor_Id(userId).orElseThrow(() ->
+        List<Comment> comments = commentRepository.findAllByAuthor_Id(userId).orElseThrow(() ->
                 new IllegalArgumentException("Cannot find comment of user " +
                         "id: " + userId + " (getCommentWithAuthor())"));
+        comments.sort(Comment::compareTo);
+        return  comments;
     }
 
     /**
