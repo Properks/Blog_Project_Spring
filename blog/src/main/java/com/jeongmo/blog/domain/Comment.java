@@ -53,6 +53,9 @@ public class Comment implements Comparable<Comment>{
     @ManyToOne
     private Comment parent;
 
+    @Column(name = "isDeleted")
+    private boolean isDeleted;
+
     @CreatedDate
     private LocalDateTime createdAt;
 
@@ -65,6 +68,7 @@ public class Comment implements Comparable<Comment>{
         this.article = article;
         this.author = author;
         this.parent = parent;
+        this.isDeleted = false;
     }
 
     @Override
@@ -74,5 +78,10 @@ public class Comment implements Comparable<Comment>{
 
     public void update(String content) {
         this.content = content;
+    }
+
+    public void setDeleted() {
+        this.isDeleted = true;
+        this.content = "Deleted Comment";
     }
 }

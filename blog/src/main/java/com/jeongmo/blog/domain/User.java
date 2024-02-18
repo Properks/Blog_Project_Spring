@@ -44,10 +44,10 @@ public class User implements UserDetails{
     /**
      * The articles which user has written
      */
-    @OneToMany(mappedBy = "author")
+    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
     private List<Article> articles;
 
-    @OneToMany(mappedBy = "author")
+    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
     private List<Comment> comments;
 
     /**

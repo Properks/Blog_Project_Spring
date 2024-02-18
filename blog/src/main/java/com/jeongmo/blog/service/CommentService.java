@@ -87,7 +87,7 @@ public class CommentService {
                 new IllegalArgumentException("Cannot find comment of user " +
                         "id: " + userId + " (getCommentWithAuthor())"));
         comments.sort(Comment::compareTo);
-        return  comments;
+        return comments;
     }
 
     /**
@@ -95,7 +95,19 @@ public class CommentService {
      * @param id The id of comment which you want to delete.
      */
     public void deleteComment(Long id) {
-        commentRepository.deleteById(id);
+        Comment comment = commentRepository.findById(id).orElseThrow(() ->
+                new IllegalArgumentException("Cannot found comment " +
+                        "id: " + id + " (deleteComment)"));
+
+        if (!comment.getReplies().isEmpty()) {
+            comment.setDeleted();
+        }
+        else {
+            commentRepository.deleteById(id);
+            if (comment.getParent().isDeleted()) {
+                deleteComment(comment.getParent().getId());
+            }
+        }
     }
 
     /**
