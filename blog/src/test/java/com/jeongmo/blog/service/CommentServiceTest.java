@@ -233,6 +233,25 @@ class CommentServiceTest {
 
     @Test
     void getCommentWithAuthor() {
+        //given
+        addComment();
+        final Long userId = user.getId();
+
+        //when
+        List<Comment> comments = commentService.getCommentWithAuthor(userId);
+
+        //then
+        assertThat(comments).hasSize(2);
+
+        assertThat(comments.get(0).getId()).isEqualTo(comment1.getId());
+        assertThat(comments.get(0).getContent()).isEqualTo(comment1.getContent());
+        assertThat(comments.get(0).getAuthor().getId()).isEqualTo(comment1.getAuthor().getId());
+        assertThat(comments.get(0).getArticle().getId()).isEqualTo(comment1.getArticle().getId());
+
+        assertThat(comments.get(1).getId()).isEqualTo(comment3.getId());
+        assertThat(comments.get(1).getContent()).isEqualTo(comment3.getContent());
+        assertThat(comments.get(1).getAuthor().getId()).isEqualTo(comment3.getAuthor().getId());
+        assertThat(comments.get(1).getArticle().getId()).isEqualTo(comment3.getArticle().getId());
     }
 
     @Test
