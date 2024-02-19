@@ -256,6 +256,53 @@ class CommentServiceTest {
 
     @Test
     void deleteComment() {
+
+        //given
+        addComment();
+
+        // When comment doesn't have reply
+        //given
+        final Long comment2Id = comment2.getId();
+
+        //when
+        commentService.deleteComment(comment2Id);
+
+        //then
+        List<Comment> comments = commentRepository.findAll();
+        assertThat(comments).hasSize(3);
+        assertThat(comments.stream().map(Comment::getId).toList()).doesNotContain(comment2Id);
+
+
+        // When comment have reply
+        //given
+        final Long comment1Id = comment1.getId();
+
+        //when
+        commentService.deleteComment(comment1Id);
+
+        //then
+        comments = commentRepository.findAll();
+        assertThat(comments).hasSize(3);
+        assertThat(comments.stream().map(Comment::getId).toList()).contains(comment1Id);
+
+        Comment foundComment = commentRepository.findById(comment1Id).get();
+        assertThat(foundComment.getContent()).isEqualTo("Deleted Comment");
+        assertThat(foundComment.isDeleted()).isTrue();
+
+
+        // When you delete a reply while the comment is deleted
+        //given
+        final Long replyId = reply1.getId();
+
+        //when
+        commentService.deleteComment(replyId);
+
+        //then
+        comments = commentRepository.findAll();
+        assertThat(comments).hasSize(1);
+        assertThat(comments.stream().map(Comment::getId).toList()).doesNotContain(replyId);
+        assertThat(comments.stream().map(Comment::getId).toList()).doesNotContain(comment1Id);
+
     }
 
     @Test
