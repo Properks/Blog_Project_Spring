@@ -8,6 +8,7 @@ import com.jeongmo.blog.dto.comment.UpdateCommentRequest;
 import com.jeongmo.blog.repository.ArticleRepository;
 import com.jeongmo.blog.repository.CommentRepository;
 import com.jeongmo.blog.util.security.SecurityUtils;
+import jakarta.annotation.Resource;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -94,19 +95,20 @@ public class CommentService {
      * Delete comment.
      * @param id The id of comment which you want to delete.
      */
+    @Transactional
     public void deleteComment(Long id) {
         Comment comment = commentRepository.findById(id).orElseThrow(() ->
                 new IllegalArgumentException("Cannot found comment " +
                         "id: " + id + " (deleteComment)"));
+        deleteCommentProcess(comment);
+    }
 
+    public void deleteCommentProcess(Comment comment) {
         if (!comment.getReplies().isEmpty()) {
             comment.setDeleted();
         }
         else {
-            commentRepository.deleteById(id);
-            if (comment.getParent().isDeleted()) {
-                deleteComment(comment.getParent().getId());
-            }
+            commentRepository.deleteById(comment.getId());
         }
     }
 

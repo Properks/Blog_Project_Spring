@@ -296,6 +296,7 @@ class CommentServiceTest {
 
         //when
         commentService.deleteComment(replyId);
+        commentService.deleteComment(comment1Id);
 
         //then
         comments = commentRepository.findAll();
