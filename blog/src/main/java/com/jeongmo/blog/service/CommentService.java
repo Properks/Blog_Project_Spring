@@ -94,15 +94,21 @@ public class CommentService {
     /**
      * Delete comment.
      * @param id The id of comment which you want to delete.
+     * @return Return whether parent is deleted or not to decide whether to delete parent comment or not.
      */
     @Transactional
-    public void deleteComment(Long id) {
+    public boolean deleteComment(Long id) {
         Comment comment = commentRepository.findById(id).orElseThrow(() ->
                 new IllegalArgumentException("Cannot found comment " +
                         "id: " + id + " (deleteComment)"));
         deleteCommentProcess(comment);
+        return comment.getParent() != null && comment.getParent().isDeleted();
     }
 
+    /**
+     * Delete comments which don't have reply or set to delete comments which have reply
+     * @param comment The comment will be deleted
+     */
     public void deleteCommentProcess(Comment comment) {
         if (!comment.getReplies().isEmpty()) {
             comment.setDeleted();
@@ -110,6 +116,36 @@ public class CommentService {
         else {
             commentRepository.deleteById(comment.getId());
         }
+    }
+
+    /**
+     * Check whether comment is deleted or not
+     * @param id The id of comment which you want to check
+     * @return boolean value, whether comment is deleted or not
+     */
+    public boolean isDeleted(Long id) {
+        if (id == null) {
+            return false;
+        }
+        Comment comment = commentRepository.findById(id).orElseThrow(() ->
+                new IllegalArgumentException("Cannot found comment " +
+                        "id: " + id + " (isDeleted())"));
+        return comment.isDeleted();
+    }
+
+    /**
+     * Get parent id of comment.
+     * @param id The id of comment which you want to find id of parent
+     * @return The id of parent
+     */
+    public Long getParentId(Long id) {
+        Comment comment = commentRepository.findById(id).orElseThrow(() ->
+                new IllegalArgumentException("Cannot found comment " +
+                        "id: " + id + " (getParentId())"));
+        if (comment.getParent() == null) {
+            return null;
+        }
+        return comment.getParent().getId();
     }
 
     /**
