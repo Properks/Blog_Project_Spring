@@ -5,6 +5,7 @@ import com.jeongmo.blog.domain.Category;
 import com.jeongmo.blog.domain.Comment;
 import com.jeongmo.blog.domain.User;
 import com.jeongmo.blog.dto.comment.CreateCommentRequest;
+import com.jeongmo.blog.dto.comment.UpdateCommentRequest;
 import com.jeongmo.blog.repository.ArticleRepository;
 import com.jeongmo.blog.repository.CategoryRepository;
 import com.jeongmo.blog.repository.CommentRepository;
@@ -293,10 +294,15 @@ class CommentServiceTest {
         // When you delete a reply while the comment is deleted
         //given
         final Long replyId = reply1.getId();
+        Long nowCommentId= replyId;
+        Long parentId;
 
         //when
-        commentService.deleteComment(replyId);
-        commentService.deleteComment(comment1Id);
+        do {
+            parentId = commentService.getParentId(nowCommentId);
+            commentService.deleteComment(nowCommentId);
+            nowCommentId = parentId;
+        } while(commentService.isDeleted(nowCommentId));
 
         //then
         comments = commentRepository.findAll();
@@ -308,5 +314,19 @@ class CommentServiceTest {
 
     @Test
     void updateComment() {
+        //given
+        addComment();
+        final Long commentId = comment1.getId();
+        final String updatedContent = "updatedComment";
+        final UpdateCommentRequest request = new UpdateCommentRequest(commentId, updatedContent);
+
+        //when
+        Comment updatedComment = commentService.updateComment(request);
+
+        //then
+        Comment foundComment = commentRepository.findById(commentId).get();
+        assertThat(updatedComment.getContent()).isEqualTo(updatedContent);
+        assertThat(foundComment.getContent()).isEqualTo(updatedContent);
+
     }
 }
