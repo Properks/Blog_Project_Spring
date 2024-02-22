@@ -83,7 +83,13 @@ public class CommentApiController {
     @DeleteMapping("/api/comment/{id}")
     public ResponseEntity<Void> deleteComment(@PathVariable Long id) {
         try{
-            commentService.deleteComment(id);
+            Long parentId;
+            Long currentId = id;
+            do {
+                parentId = commentService.getParentId(currentId);
+                commentService.deleteComment(currentId);
+                currentId = parentId;
+            } while (commentService.isDeleted(currentId));
             return ResponseEntity.ok().build();
         } catch (Exception e) {
             e.printStackTrace();
