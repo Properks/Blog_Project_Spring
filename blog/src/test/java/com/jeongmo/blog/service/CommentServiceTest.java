@@ -70,7 +70,7 @@ class CommentServiceTest {
         user = userRepository.save(User.builder()
                 .email("test@email.com")
                 .password(encoder.encode("test1234"))
-                .nickname("test")
+                .nickname("test#12345")
                 .build());
         SecurityContextHolder.getContext().setAuthentication(
                 new UsernamePasswordAuthenticationToken(user, user.getPassword(), user.getAuthorities())
@@ -80,7 +80,7 @@ class CommentServiceTest {
         user2 = userRepository.save(User.builder()
                 .email("test2@email.com")
                 .password(encoder.encode("test1234"))
-                .nickname("test2")
+                .nickname("test2#56789")
                 .build());
     }
 
