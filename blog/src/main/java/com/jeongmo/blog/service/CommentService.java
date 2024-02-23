@@ -41,12 +41,12 @@ public class CommentService {
                     new IllegalArgumentException("Cannot find comment id:" + request.getParent() + " (createComment())"));
         }
         User author = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return Comment.builder()
+        return commentRepository.save(Comment.builder()
                 .content(request.getContent())
                 .article(article)
                 .author(author)
                 .parent(parent)
-                .build();
+                .build());
     }
 
     /**
