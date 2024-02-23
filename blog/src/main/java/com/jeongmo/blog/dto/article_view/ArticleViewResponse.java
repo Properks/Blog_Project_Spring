@@ -3,6 +3,8 @@ package com.jeongmo.blog.dto.article_view;
 import com.jeongmo.blog.domain.Article;
 import com.jeongmo.blog.domain.Category;
 import com.jeongmo.blog.domain.User;
+import com.jeongmo.blog.dto.category.CategoryResponse;
+import com.jeongmo.blog.dto.user.UserResponse;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -17,8 +19,8 @@ public class ArticleViewResponse {
     private Long id;
     private String title;
     private String content;
-    private User author;
-    private Category category;
+    private UserResponse author;
+    private CategoryResponse category;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
@@ -31,8 +33,10 @@ public class ArticleViewResponse {
         this.id = article.getId();
         this.title = article.getTitle();
         this.content = article.getContent();
-        this.author = article.getAuthor();
-        this.category = article.getCategory();
+        this.author = article.getAuthor() == null ? null :
+                new UserResponse(article.getAuthor());
+        this.category = article.getCategory() == null ? null :
+                new CategoryResponse(article.getCategory());
         this.createdAt = article.getCreatedAt();
         this.updatedAt = article.getUpdatedAt();
     }
