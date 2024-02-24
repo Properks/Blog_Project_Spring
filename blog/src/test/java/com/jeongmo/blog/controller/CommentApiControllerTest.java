@@ -6,6 +6,7 @@ import com.jeongmo.blog.domain.Category;
 import com.jeongmo.blog.domain.Comment;
 import com.jeongmo.blog.domain.User;
 import com.jeongmo.blog.dto.comment.CreateCommentRequest;
+import com.jeongmo.blog.dto.comment.UpdateCommentRequest;
 import com.jeongmo.blog.repository.ArticleRepository;
 import com.jeongmo.blog.repository.CategoryRepository;
 import com.jeongmo.blog.repository.CommentRepository;
@@ -195,22 +196,173 @@ class CommentApiControllerTest {
     }
 
     @Test
-    void getComments() {
+    void getComments() throws Exception{
+        //given
+        addComment();
+        final String url = "/api/comment";
+
+        //when
+        ResultActions result = mvc.perform(get(url));
+
+        //then
+        result.andExpect(status().isOk())
+                .andExpect(jsonPath("$.size()").value(4));
+
+        result
+                .andExpect(jsonPath("$[0].id").value(comment1.getId()))
+                .andExpect(jsonPath("$[0].content").value(comment1.getContent()))
+                .andExpect(jsonPath("$[0].authorId").value(comment1.getAuthor().getId()))
+                .andExpect(jsonPath("$[0].articleId").value(comment1.getArticle().getId()));
+
+        result
+                .andExpect(jsonPath("$[1].id").value(comment2.getId()))
+                .andExpect(jsonPath("$[1].content").value(comment2.getContent()))
+                .andExpect(jsonPath("$[1].authorId").value(comment2.getAuthor().getId()))
+                .andExpect(jsonPath("$[1].articleId").value(comment2.getArticle().getId()));
+
+        result
+                .andExpect(jsonPath("$[2].id").value(reply1.getId()))
+                .andExpect(jsonPath("$[2].content").value(reply1.getContent()))
+                .andExpect(jsonPath("$[2].authorId").value(reply1.getAuthor().getId()))
+                .andExpect(jsonPath("$[2].articleId").value(reply1.getArticle().getId()));
+
+        result
+                .andExpect(jsonPath("$[3].id").value(comment3.getId()))
+                .andExpect(jsonPath("$[3].content").value(comment3.getContent()))
+                .andExpect(jsonPath("$[3].authorId").value(comment3.getAuthor().getId()))
+                .andExpect(jsonPath("$[3].articleId").value(comment3.getArticle().getId()));
     }
 
     @Test
-    void getCommentWithArticle() {
+    void getCommentWithArticle() throws Exception{
+        //given
+        addComment();
+        final String url = "/api/comment/article/{articleId}";
+        final Long articleId = article1.getId();
+
+        //when
+        ResultActions result = mvc.perform(get(url, articleId));
+
+        //then
+        result.andExpect(status().isOk())
+                .andExpect(jsonPath("$.size()").value(3));
+
+        result
+                .andExpect(jsonPath("$[0].id").value(comment1.getId()))
+                .andExpect(jsonPath("$[0].content").value(comment1.getContent()))
+                .andExpect(jsonPath("$[0].authorId").value(comment1.getAuthor().getId()))
+                .andExpect(jsonPath("$[0].articleId").value(comment1.getArticle().getId()));
+
+        result
+                .andExpect(jsonPath("$[1].id").value(reply1.getId()))
+                .andExpect(jsonPath("$[1].content").value(reply1.getContent()))
+                .andExpect(jsonPath("$[1].authorId").value(reply1.getAuthor().getId()))
+                .andExpect(jsonPath("$[1].articleId").value(reply1.getArticle().getId()));
+
+        result
+                .andExpect(jsonPath("$[2].id").value(comment2.getId()))
+                .andExpect(jsonPath("$[2].content").value(comment2.getContent()))
+                .andExpect(jsonPath("$[2].authorId").value(comment2.getAuthor().getId()))
+                .andExpect(jsonPath("$[2].articleId").value(comment2.getArticle().getId()));
     }
 
     @Test
-    void getCommentWithAuthor() {
+    void getCommentWithAuthor() throws Exception{
+        //given
+        addComment();
+        final String url = "/api/comment/author/{userId}";
+        final Long userId = user.getId();
+
+        //when
+        ResultActions result = mvc.perform(get(url, userId));
+
+        //then
+        result.andExpect(status().isOk())
+                .andExpect(jsonPath("$.size()").value(2));
+
+        result
+                .andExpect(jsonPath("$[0].id").value(comment1.getId()))
+                .andExpect(jsonPath("$[0].content").value(comment1.getContent()))
+                .andExpect(jsonPath("$[0].authorId").value(comment1.getAuthor().getId()))
+                .andExpect(jsonPath("$[0].articleId").value(comment1.getArticle().getId()));
+
+        result
+                .andExpect(jsonPath("$[1].id").value(comment3.getId()))
+                .andExpect(jsonPath("$[1].content").value(comment3.getContent()))
+                .andExpect(jsonPath("$[1].authorId").value(comment3.getAuthor().getId()))
+                .andExpect(jsonPath("$[1].articleId").value(comment3.getArticle().getId()));
     }
 
     @Test
-    void deleteComment() {
+    void deleteComment() throws Exception{
+        //given
+        addComment();
+        final String url = "/api/comment/{id}";
+
+        // When comment doesn't have reply
+        //given
+        final Long comment2Id = comment2.getId();
+
+        //when
+        mvc.perform(delete(url, comment2Id));
+
+        //then
+        List<Comment> case1 = commentRepository.findAll();
+        assertThat(case1).hasSize(3);
+        assertThat(case1.stream().map(Comment::getId).toList()).doesNotContain(comment2Id);
+
+        // When comment have reply
+        //given
+        final Long comment1Id = comment1.getId();
+
+        //when
+        mvc.perform(delete(url, comment1Id));
+
+        //then
+        List<Comment> case2 = commentRepository.findAll();
+        assertThat(case2).hasSize(3);
+        assertThat(case2.stream().map(Comment::getId).toList()).contains(comment1Id);
+
+        Comment foundComment = commentRepository.findById(comment1Id).get();
+        assertThat(foundComment.getContent()).isEqualTo("Deleted Comment");
+        assertThat(foundComment.isDeleted()).isTrue();
+
+
+        // When you delete a reply while the comment is deleted
+        //given
+        final Long replyId = reply1.getId();
+
+        //when
+        mvc.perform(delete(url, replyId));
+
+        //then
+        List<Comment> case3 = commentRepository.findAll();
+        assertThat(case3).hasSize(1);
+        assertThat(case3.stream().map(Comment::getId).toList()).doesNotContain(replyId);
+        assertThat(case3.stream().map(Comment::getId).toList()).doesNotContain(comment1Id);
     }
 
     @Test
-    void updateComment() {
+    void updateComment() throws Exception{
+        //given
+        addComment();
+        final String url = "/api/comment";
+        final Long commentId = comment1.getId();
+        final String updatedContent = "updatedComment";
+        final UpdateCommentRequest dto = new UpdateCommentRequest(commentId, updatedContent);
+        final String request = objectMapper.writeValueAsString(dto);
+
+        //when
+        ResultActions result = mvc.perform(put(url)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(request));
+
+        //then
+        result.andExpect(status().isOk())
+                .andExpect(jsonPath("$.content").value(updatedContent));
+
+        Comment foundComment = commentRepository.findById(commentId).get();
+        assertThat(foundComment.getContent()).isEqualTo(updatedContent);
+
     }
 }
