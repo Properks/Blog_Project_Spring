@@ -4,8 +4,10 @@ import com.jeongmo.blog.domain.Article;
 import com.jeongmo.blog.domain.User;
 import com.jeongmo.blog.dto.article_view.ArticleViewResponse;
 import com.jeongmo.blog.dto.category.CategoryResponse;
+import com.jeongmo.blog.dto.comment.CommentResponse;
 import com.jeongmo.blog.service.ArticleService;
 import com.jeongmo.blog.service.CategoryService;
+import com.jeongmo.blog.service.CommentService;
 import com.jeongmo.blog.util.security.SecurityUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
@@ -24,6 +26,7 @@ public class ArticleViewController {
 
     private final ArticleService articleService;
     private final CategoryService categoryService;
+    private final CommentService commentService;
     private final SecurityUtils securityUtils;
 
     private static final String MAIN = "mainPage";
@@ -78,6 +81,7 @@ public class ArticleViewController {
         ArticleViewResponse response = new ArticleViewResponse(articleService.getArticle(id));
         securityUtils.checkAndAddLoginInfo(model, authentication);
         model.addAttribute("viewArticle", response);
+        addAllComments(model, id);
         return MAIN;
     }
 
@@ -118,5 +122,13 @@ public class ArticleViewController {
                             .map(CategoryResponse::new)
                             .toList());
         }
+    }
+
+    private void addAllComments(Model model, Long articleId) {
+        List<CommentResponse> comments = commentService.getCommentsWithArticle(articleId)
+                .stream()
+                .map(CommentResponse::new)
+                .toList();
+        model.addAttribute("comments", comments);
     }
 }

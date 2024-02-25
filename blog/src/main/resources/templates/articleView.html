@@ -33,6 +33,23 @@
                 </div>
             </section>
         </div>
+        <div class="article-view-comment-container">
+            <div class="article-view-comment-body" th:if="${comments}" th:each="comment : ${comments}">
+                <div class="article-view-reply-indent" th:if="${comment.parentId} != null">
+                    <span class="material-symbols-outlined">
+                        subdirectory_arrow_right
+                    </span>
+                </div>
+                <div class="article-view-comment-author">
+                    <p th:text="${#strings.arraySplit(comment.authorNickname, '&#35')[0]}"></p>
+                </div>
+                <div class="article-view-comment-content">
+                    <div style="margin: 5px;" th:each="line : ${#strings.arraySplit(comment.content, '&#10')}">
+                        <p style="margin: 0;" th:text="${line}"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
     </article>
 </div>
 <div id="article-view-button-container">
