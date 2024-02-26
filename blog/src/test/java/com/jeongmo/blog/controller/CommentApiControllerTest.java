@@ -184,14 +184,14 @@ class CommentApiControllerTest {
         commentResult.andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(comment1.getId()))
                 .andExpect(jsonPath("$.content").value(comment1.getContent()))
-                .andExpect(jsonPath("$.authorId").value(comment1.getAuthor().getId()))
+                .andExpect(jsonPath("$.author.id").value(comment1.getAuthor().getId()))
                 .andExpect(jsonPath("$.articleId").value(comment1.getArticle().getId()));
 
         replyResult.andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(reply1.getId()))
                 .andExpect(jsonPath("$.content").value(reply1.getContent()))
                 .andExpect(jsonPath("$.parentId").value(reply1.getParent().getId()))
-                .andExpect(jsonPath("$.authorId").value(reply1.getAuthor().getId()))
+                .andExpect(jsonPath("$.author.id").value(reply1.getAuthor().getId()))
                 .andExpect(jsonPath("$.articleId").value(reply1.getArticle().getId()));
     }
 
@@ -211,25 +211,25 @@ class CommentApiControllerTest {
         result
                 .andExpect(jsonPath("$[0].id").value(comment1.getId()))
                 .andExpect(jsonPath("$[0].content").value(comment1.getContent()))
-                .andExpect(jsonPath("$[0].authorId").value(comment1.getAuthor().getId()))
+                .andExpect(jsonPath("$[0].author.id").value(comment1.getAuthor().getId()))
                 .andExpect(jsonPath("$[0].articleId").value(comment1.getArticle().getId()));
 
         result
                 .andExpect(jsonPath("$[1].id").value(comment2.getId()))
                 .andExpect(jsonPath("$[1].content").value(comment2.getContent()))
-                .andExpect(jsonPath("$[1].authorId").value(comment2.getAuthor().getId()))
+                .andExpect(jsonPath("$[1].author.id").value(comment2.getAuthor().getId()))
                 .andExpect(jsonPath("$[1].articleId").value(comment2.getArticle().getId()));
 
         result
                 .andExpect(jsonPath("$[2].id").value(reply1.getId()))
                 .andExpect(jsonPath("$[2].content").value(reply1.getContent()))
-                .andExpect(jsonPath("$[2].authorId").value(reply1.getAuthor().getId()))
+                .andExpect(jsonPath("$[2].author.id").value(reply1.getAuthor().getId()))
                 .andExpect(jsonPath("$[2].articleId").value(reply1.getArticle().getId()));
 
         result
                 .andExpect(jsonPath("$[3].id").value(comment3.getId()))
                 .andExpect(jsonPath("$[3].content").value(comment3.getContent()))
-                .andExpect(jsonPath("$[3].authorId").value(comment3.getAuthor().getId()))
+                .andExpect(jsonPath("$[3].author.id").value(comment3.getAuthor().getId()))
                 .andExpect(jsonPath("$[3].articleId").value(comment3.getArticle().getId()));
     }
 
@@ -250,19 +250,19 @@ class CommentApiControllerTest {
         result
                 .andExpect(jsonPath("$[0].id").value(comment1.getId()))
                 .andExpect(jsonPath("$[0].content").value(comment1.getContent()))
-                .andExpect(jsonPath("$[0].authorId").value(comment1.getAuthor().getId()))
+                .andExpect(jsonPath("$[0].author.id").value(comment1.getAuthor().getId()))
                 .andExpect(jsonPath("$[0].articleId").value(comment1.getArticle().getId()));
 
         result
                 .andExpect(jsonPath("$[1].id").value(reply1.getId()))
                 .andExpect(jsonPath("$[1].content").value(reply1.getContent()))
-                .andExpect(jsonPath("$[1].authorId").value(reply1.getAuthor().getId()))
+                .andExpect(jsonPath("$[1].author.id").value(reply1.getAuthor().getId()))
                 .andExpect(jsonPath("$[1].articleId").value(reply1.getArticle().getId()));
 
         result
                 .andExpect(jsonPath("$[2].id").value(comment2.getId()))
                 .andExpect(jsonPath("$[2].content").value(comment2.getContent()))
-                .andExpect(jsonPath("$[2].authorId").value(comment2.getAuthor().getId()))
+                .andExpect(jsonPath("$[2].author.id").value(comment2.getAuthor().getId()))
                 .andExpect(jsonPath("$[2].articleId").value(comment2.getArticle().getId()));
     }
 
@@ -283,13 +283,13 @@ class CommentApiControllerTest {
         result
                 .andExpect(jsonPath("$[0].id").value(comment1.getId()))
                 .andExpect(jsonPath("$[0].content").value(comment1.getContent()))
-                .andExpect(jsonPath("$[0].authorId").value(comment1.getAuthor().getId()))
+                .andExpect(jsonPath("$[0].author.id").value(comment1.getAuthor().getId()))
                 .andExpect(jsonPath("$[0].articleId").value(comment1.getArticle().getId()));
 
         result
                 .andExpect(jsonPath("$[1].id").value(comment3.getId()))
                 .andExpect(jsonPath("$[1].content").value(comment3.getContent()))
-                .andExpect(jsonPath("$[1].authorId").value(comment3.getAuthor().getId()))
+                .andExpect(jsonPath("$[1].author.id").value(comment3.getAuthor().getId()))
                 .andExpect(jsonPath("$[1].articleId").value(comment3.getArticle().getId()));
     }
 

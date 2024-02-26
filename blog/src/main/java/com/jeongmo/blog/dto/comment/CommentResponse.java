@@ -1,7 +1,7 @@
 package com.jeongmo.blog.dto.comment;
 
 import com.jeongmo.blog.domain.Comment;
-import com.jeongmo.blog.domain.User;
+import com.jeongmo.blog.dto.user.UserResponse;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -13,8 +13,7 @@ public class CommentResponse {
     private Long id;
     private String content;
     private Long articleId;
-    private Long authorId;
-    private String authorNickname;
+    private UserResponse author;
     private Long parentId;
 
     private LocalDateTime createdAt;
@@ -24,8 +23,7 @@ public class CommentResponse {
         this.id = comment.getId();
         this.content = comment.getContent();
         this.articleId = comment.getArticle().getId();
-        this.authorId = comment.getAuthor().getId();
-        this.authorNickname = comment.getAuthor().getNickname();
+        this.author = new UserResponse(comment.getAuthor());
         this.parentId = comment.getParent() == null ? null : comment.getParent().getId();
         this.createdAt = comment.getCreatedAt();
         this.updatedAt = comment.getUpdatedAt();
