@@ -38,19 +38,22 @@
                 <h4>comments</h4>
             </div>
             <div class="article-view-comment-body" th:if="${comments}" th:each="comment : ${comments}">
-                <div class="article-view-reply-indent" th:if="${comment.parentId} != null">
-                    <span class="material-symbols-outlined">
-                        subdirectory_arrow_right
-                    </span>
-                </div>
                 <div class="article-view-comment-author">
                     <input type="hidden" th:value="${comment.author.id}">
+                    <span class="material-symbols-outlined" th:if="${comment.parentId} != null">
+                        subdirectory_arrow_right
+                    </span>
                     <p th:text="${comment.author.nicknameWithoutCode}"></p>
                 </div>
                 <div class="article-view-comment-content">
                     <div style="margin: 5px;" th:each="line : ${#strings.arraySplit(comment.content, '&#10')}">
                         <p style="margin: 0;" th:text="${line}"></p>
                     </div>
+                </div>
+                <div class="article-view-comment-button-container">
+                    <button class="article-view-create-reply-btn">reply</button>
+                    <button class="article-view-modify-comment-btn">modify</button>
+                    <button class="article-view-delete-comment-btn">delete</button>
                 </div>
             </div>
             <div class="article-view-create-comment-container">
