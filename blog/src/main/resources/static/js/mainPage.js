@@ -112,6 +112,41 @@ if (createButton) {
     })
 }
 
+//create comment button
+const createCommentBtn = document.getElementById('article-view-create-comment-btn');
+if (createCommentBtn) {
+    createCommentBtn.addEventListener('click', () => {
+        let content = document.getElementById('article-view-create-comment-content').value;
+        if (content === '') {
+            alert('Comment is empty!');
+        }
+        else {
+            let articleId = document.getElementById('article-view-id').value;
+            let currentURL = location.href;
+            fetch('/api/comment', {
+                method: 'POST',
+                headers: {
+                    'Content-type': 'application/json'
+                },
+                body: JSON.stringify({
+                    articleId: articleId,
+                    parent: null,
+                    content: content
+                })
+            })
+                .then((response) => {
+                    if (response.status === 201) {
+                        alert('Create comment successfully');
+                    }
+                    else {
+                        alert('Fail to create comment');
+                    }
+                    location.replace(currentURL);
+                })
+        }
+    })
+}
+
 // check nickname is same as author. return boolean
 function isSameAuthor(nickname) {
     let author = document.getElementById('article-view-author').textContent.replace("Writer: ", "");
