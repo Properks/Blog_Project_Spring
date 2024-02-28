@@ -18,6 +18,7 @@
                 <div class="home-page-button"><a th:href="@{/home}">blog</a></div>
                 <div class="btn-container" th:if="${loginIn}">
                     <input type="hidden" id="user-id" th:value="${loginIn.id}">
+                    <input type="hidden" id="user-nickname" th:value="${loginIn.nicknameWithoutCode}">
                     <div class="user-info-container">
                         <div class="user-info-btn" th:text="|Username: ${loginIn.getNicknameWithoutCode()}|"
                         th:attr="hover-text=${loginIn.nickname}">
