@@ -38,6 +38,7 @@
                 <h4>comments</h4>
             </div>
             <div class="article-view-comment-body" th:if="${comments}" th:each="comment : ${comments}">
+                <input type="hidden" class="article-view-comment-id" th:value="${comment.id}">
                 <div class="article-view-comment-author">
                     <input type="hidden" th:value="${comment.author.id}">
                     <span class="material-symbols-outlined" th:if="${comment.parentId} != null">
@@ -49,6 +50,12 @@
                     <div style="margin: 5px;" th:each="line : ${#strings.arraySplit(comment.content, '&#10')}">
                         <p style="margin: 0;" th:text="${line}"></p>
                     </div>
+                </div>
+                <div class="article-view-modify-comment-container">
+                    <textarea cols="30" rows="1" class="article-view-modify-comment-textarea"
+                              th:text="${comment.content}"></textarea>
+                    <button class="article-view-cancel-modify-comment-btn">cancel</button>
+                    <button class="article-view-submit-modify-comment-btn">submit</button>
                 </div>
                 <div class="article-view-comment-button-container">
                     <button class="article-view-create-reply-btn">reply</button>

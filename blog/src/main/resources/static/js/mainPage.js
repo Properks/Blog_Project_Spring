@@ -139,7 +139,7 @@ if (createCommentBtn) {
                         alert('Create comment successfully');
                     }
                     else {
-                        alert('Fail to create comment');
+                        alert('Fail to create comment (ERROR: ' + response.status + ")");
                     }
                     location.replace(currentURL);
                 })
@@ -202,7 +202,7 @@ function replyElement(element, nickname) {
     let contentDiv = document.createElement('div');
     contentDiv.classList.add('article-view-reply-content');
     let contentInput = document.createElement('input');
-    // 필요에 따라 contentInput 속성 설정
+    contentInput.value = "@" + nickname + " ";
     contentDiv.appendChild(contentInput);
 
     // article-view-reply-button-container
@@ -224,6 +224,56 @@ function replyElement(element, nickname) {
 
     //add element below element
     element.insertAdjacentElement('afterend', replyBody);
+}
+
+const deleteCommentButtons = document.querySelectorAll('.article-view-delete-comment-btn');
+if (deleteCommentButtons) {
+    deleteCommentButtons.forEach(button =>
+        button.addEventListener('click', () => {
+        if (confirm("Do you want to delete the comment?")) {
+            let commentId = button.closest('.article-view-comment-body').querySelector('.article-view-comment-id').value;
+            let currentURL = location.href;
+            fetch('/api/comment/' + commentId, {method: 'DELETE'})
+                .then(response => {
+                    if (response.status === 200) {
+                        alert('Delete it successfully');
+                    }
+                    else {
+                        alert('Fail to delete (ERROR: ' + response.status + ")");
+                    }
+                    location.replace(currentURL);
+                })
+        }
+    }))
+}
+
+const modifyCommentButtons = document.querySelectorAll('.article-view-modify-comment-btn');
+if (modifyCommentButtons) {
+    modifyCommentButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            closeAllOfModifyContainer();
+            let commentBody =  button.closest('.article-view-comment-body');
+            let commentContent = commentBody.querySelector('.article-view-comment-content');
+            let modifyContainer = commentBody.querySelector('.article-view-modify-comment-container');
+            commentContent.style.display = 'none';
+            modifyContainer.style.display = 'block';
+        })
+    })
+}
+const modifyCancelButtons = document.querySelectorAll('.article-view-cancel-modify-comment-btn');
+if (modifyCancelButtons) {
+    modifyCancelButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            closeAllOfModifyContainer();
+        })
+    })
+}
+
+function closeAllOfModifyContainer() {
+    commentBodies.forEach(body => {
+        body.querySelector('.article-view-comment-content').style.display = 'block';
+        body.querySelector('.article-view-modify-comment-container').style.display = 'none';
+    })
 }
 
 // check nickname is same as author. return boolean
