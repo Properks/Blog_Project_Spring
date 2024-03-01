@@ -108,6 +108,7 @@ if (commentButtonContainer) {
     })
 }
 
+//delete
 const deleteCommentButtons = document.querySelectorAll('.article-view-delete-comment-btn');
 if (deleteCommentButtons) {
     deleteCommentButtons.forEach(button =>
@@ -129,6 +130,8 @@ if (deleteCommentButtons) {
         }))
 }
 
+
+//modify
 const modifyCommentButtons = document.querySelectorAll('.article-view-modify-comment-btn');
 if (modifyCommentButtons) {
     modifyCommentButtons.forEach(button => {
@@ -147,6 +150,39 @@ if (modifyCancelButtons) {
     modifyCancelButtons.forEach(button => {
         button.addEventListener('click', () => {
             closeAllOfModifyContainer();
+        })
+    })
+}
+
+const modifySubmitButtons = document.querySelectorAll('.article-view-submit-modify-comment-btn');
+if (modifySubmitButtons) {
+    modifySubmitButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            let commentBody = button.closest('.article-view-comment-body')
+            let commentId = commentBody.querySelector('.article-view-comment-id').value;
+            let modifiedContent = commentBody.querySelector('.article-view-modify-comment-textarea').value;
+
+            let currentURL = location.href;
+
+            fetch('/api/comment', {
+                method: 'PUT',
+                headers: {
+                    'Content-type': 'application/json'
+                },
+                body: JSON.stringify({
+                    commentId: commentId,
+                    content: modifiedContent
+                })
+            })
+                .then(response => {
+                    if (response.status === 200) {
+                        alert('Update comment successfully');
+                    }
+                    else {
+                        alert('Fail to update comment (ERROR: ' + response.status + ")");
+                    }
+                    location.replace(currentURL);
+                })
         })
     })
 }
