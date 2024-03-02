@@ -187,6 +187,19 @@ if (modifySubmitButtons) {
     })
 }
 
+//reply
+const replyButtons = document.querySelectorAll('.article-view-create-reply-btn');
+if (replyButtons) {
+    replyButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            let commentBody = button.closest('.article-view-comment-body');
+            let commentAuthor = commentBody.querySelector('.article-view-author-nickname').textContent;
+            closeAllOfReplyContainer();
+            replyElement(commentBody, commentAuthor);
+        })
+    })
+}
+
 function closeAllOfModifyContainer() {
     commentBodies.forEach(body => {
         body.querySelector('.article-view-comment-content').style.display = 'block';
@@ -194,45 +207,19 @@ function closeAllOfModifyContainer() {
     })
 }
 
+function closeAllOfReplyContainer() {
+    let container = document.querySelector('.article-view-comment-container');
+    let replyBodies = container.querySelectorAll('.article-view-reply-body');
+    replyBodies.forEach(body => {
+        body.remove();
+    })
+}
+
 function replyElement(element, nickname) {
-    // article-view-reply-body
-    let replyBody = document.createElement('div');
-    replyBody.classList.add('article-view-reply-body');
+    let replyBody = document.querySelector('.article-view-reply-body').cloneNode(true);
+    replyBody.style.display = 'flex';
+    replyBody.querySelector('.article-view-reply-textarea').textContent = "@" + nickname + " ";
 
-    // article-view-reply-author
-    let authorDiv = document.createElement('div');
-    authorDiv.classList.add('article-view-reply-author');
-    let authorInput = document.createElement('input');
-    authorInput.type = 'hidden';
-    authorInput.value = document.getElementById('user-id').value;
-    let authorParagraph = document.createElement('p');
-    authorParagraph.textContent = document.getElementById('user-nickname').value;
-    authorDiv.appendChild(authorInput);
-    authorDiv.appendChild(authorParagraph);
-
-    // article-view-reply-content
-    let contentDiv = document.createElement('div');
-    contentDiv.classList.add('article-view-reply-content');
-    let contentInput = document.createElement('input');
-    contentInput.value = "@" + nickname + " ";
-    contentDiv.appendChild(contentInput);
-
-    // article-view-reply-button-container
-    let buttonContainerDiv = document.createElement('div');
-    buttonContainerDiv.classList.add('article-view-reply-button-container');
-    let cancelButton = document.createElement('button');
-    cancelButton.classList.add('article-view-cancel-reply-btn');
-    cancelButton.textContent = 'cancel';
-    let submitButton = document.createElement('button');
-    submitButton.classList.add('article-view-submit-reply-btn');
-    submitButton.textContent = 'submit';
-    buttonContainerDiv.appendChild(cancelButton);
-    buttonContainerDiv.appendChild(submitButton);
-
-    //append child
-    replyBody.appendChild(authorDiv);
-    replyBody.appendChild(contentDiv);
-    replyBody.appendChild(buttonContainerDiv);
 
     //add element below element
     element.insertAdjacentElement('afterend', replyBody);

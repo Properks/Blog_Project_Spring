@@ -45,7 +45,7 @@
                     <span class="material-symbols-outlined" th:if="${comment.parentId} != null">
                         subdirectory_arrow_right
                     </span>
-                    <p th:text="${comment.author.nicknameWithoutCode}"></p>
+                    <p class="article-view-author-nickname" th:text="${comment.author.nicknameWithoutCode}"></p>
                 </div>
                 <div class="article-view-comment-content">
                     <div style="margin: 5px;" th:each="line : ${#strings.arraySplit(comment.content, '&#10')}">
@@ -77,6 +77,20 @@
                               placeholder="comment"></textarea>
                     <button id="article-view-create-comment-btn">create</button>
                 </div>
+            </div>
+        </div>
+        <div class="article-view-reply-body">
+            <div class="article-view-reply-author">
+                <input type="hidden" th:value="${loginIn.id}">
+                <span class="material-symbols-outlined">
+                        subdirectory_arrow_right
+                    </span>
+                <p th:text="${loginIn.nicknameWithoutCode}"></p>
+            </div>
+            <div class="article-view-reply-content">
+            <textarea cols="30" rows="1" class="article-view-reply-textarea"></textarea>
+                <button class="article-view-cancel-reply-btn">cancel</button>
+                <button class="article-view-submit-reply-btn">submit</button>
             </div>
         </div>
     </article>
