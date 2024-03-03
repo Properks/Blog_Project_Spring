@@ -80,6 +80,7 @@
             </div>
         </div>
         <div class="article-view-reply-body">
+            <input type="hidden" class="article-view-parent-comment-id">
             <div class="article-view-reply-author">
                 <input type="hidden" th:value="${loginIn.id}">
                 <span class="material-symbols-outlined">
@@ -88,7 +89,7 @@
                 <p th:text="${loginIn.nicknameWithoutCode}"></p>
             </div>
             <div class="article-view-reply-content">
-            <textarea cols="30" rows="1" class="article-view-reply-textarea"></textarea>
+                <textarea cols="30" rows="1" class="article-view-reply-textarea"></textarea>
                 <button class="article-view-cancel-reply-btn">cancel</button>
                 <button class="article-view-submit-reply-btn">submit</button>
             </div>

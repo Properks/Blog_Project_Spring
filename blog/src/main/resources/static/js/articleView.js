@@ -194,8 +194,9 @@ if (replyButtons) {
         button.addEventListener('click', () => {
             let commentBody = button.closest('.article-view-comment-body');
             let commentAuthor = commentBody.querySelector('.article-view-author-nickname').textContent;
+            let id = commentBody.querySelector('.article-view-comment-id').value;
             closeAllOfReplyContainer();
-            replyElement(commentBody, commentAuthor);
+            replyElement(commentBody, commentAuthor, id);
         })
     })
 }
@@ -215,12 +216,57 @@ function closeAllOfReplyContainer() {
     })
 }
 
-function replyElement(element, nickname) {
+function replyElement(element, nickname, id) {
     let replyBody = document.querySelector('.article-view-reply-body').cloneNode(true);
     replyBody.style.display = 'flex';
     replyBody.querySelector('.article-view-reply-textarea').textContent = "@" + nickname + " ";
+    replyBody.querySelector('.article-view-parent-comment-id').value = id;
 
+    //add event
+    let cancelButton = replyBody.querySelector('.article-view-cancel-reply-btn');
+    let submitButton = replyBody.querySelector('.article-view-submit-reply-btn');
+    replyCancelButtonEvent(cancelButton);
+    replySubmitButtonEvent(submitButton);
 
     //add element below element
     element.insertAdjacentElement('afterend', replyBody);
+}
+
+function replyCancelButtonEvent(cancelButton) {
+    cancelButton.addEventListener('click', () => {
+        closeAllOfReplyContainer();
+    })
+}
+
+function replySubmitButtonEvent(submitButton) {
+    submitButton.addEventListener('click', () => {
+        let articleId = document.getElementById('article-view-id').value;
+
+        let replyBody = submitButton.closest('.article-view-reply-body')
+        let content = replyBody.querySelector('.article-view-reply-textarea').value;
+        let parent = replyBody.querySelector('.article-view-parent-comment-id').value;
+        let currentURL = location.href;
+        if (confirm('Do you want to post reply? \nContent: ' + content)) {
+            fetch('/api/comment', {
+                method: 'POST',
+                headers: {
+                    'Content-type': 'application/json'
+                },
+                body: JSON.stringify({
+                    articleId: articleId,
+                    parent: parent,
+                    content: content
+                })
+            })
+                .then((response) => {
+                    if (response.status === 201) {
+                        alert('Create reply successfully');
+                    }
+                    else {
+                        alert('Fail to create reply (ERROR: ' + response.status + ")");
+                    }
+                    location.replace(currentURL);
+                })
+        }
+    })
 }
