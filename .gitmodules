@@ -1,4 +1,4 @@
-[submodule "Submodule-application"]
+[submodule "blog/Submodule-application"]
 	path = blog/Submodule-application
-	url = https://github.com/Properks/Submodule-application.git
+	url = https://github.com/Properks/Submodule-application
 	branch = revise_blog
