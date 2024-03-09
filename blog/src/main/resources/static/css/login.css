@@ -6,6 +6,9 @@ input {text-transform: initial;}
 .main-page-container {padding:1rem; width:40%; height:100%;}
 .body-container {padding:10px; border: 1px solid black;  border-radius: 1rem; background-color: white;}
 
+.login-oauth2-container, .login-oauth2-container * {margin: 0 auto; text-align: center; align-content: center;}
+.login-oauth2-container div {padding: 5px;}
+
 #login-form h4 {width: 100%; text-align: center; text-transform: capitalize;}
 #login-form {position:relative;}
 #login-form label {width:100px; float:left; text-transform: uppercase;}
