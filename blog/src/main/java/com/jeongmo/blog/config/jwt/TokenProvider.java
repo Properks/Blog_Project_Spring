@@ -9,7 +9,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
@@ -33,6 +32,7 @@ public class TokenProvider {
                 .setSubject(user.getEmail())
                 .setIssuedAt(new Date())
                 .setExpiration(expire)
+                .claim("id", user.getId())
                 .setIssuer(jwtProperties.getIssuer())
                 .signWith(SignatureAlgorithm.HS256, jwtProperties.getSecret())
                 .compact();
