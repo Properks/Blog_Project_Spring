@@ -34,6 +34,12 @@ CREATE TABLE IF NOT EXISTS comment (
                          FOREIGN KEY (author_id) REFERENCES user(id),
                          FOREIGN KEY (parent_id) REFERENCES comment(id)
 );
+CREATE TABLE IF NOT EXISTS refresh_token (
+                               id BIGINT AUTO_INCREMENT PRIMARY KEY,
+                               user_id BIGINT,
+                               refresh_token VARCHAR(255)
+);
+
 
 
 
