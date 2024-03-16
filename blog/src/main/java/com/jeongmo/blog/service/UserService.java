@@ -22,8 +22,8 @@ public class UserService {
      *
      * @param dto The information of user will add
      */
-    public void save(AddUserRequest dto) {
-        userRepository.save(User.builder()
+    public User save(AddUserRequest dto) {
+        return userRepository.save(User.builder()
                 .email(dto.getEmail())
                 .password(encoder.encode(dto.getPassword()))
                 .nickname(setNicknameWithCode(dto.getNickname()))
