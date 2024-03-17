@@ -1,6 +1,12 @@
 package com.jeongmo.blog.config;
 
+import com.jeongmo.blog.config.jwt.TokenProvider;
+import com.jeongmo.blog.config.oauth.OAuth2BasedOnCookieRepository;
+import com.jeongmo.blog.config.oauth.OAuth2SuccessfulHandler;
+import com.jeongmo.blog.config.oauth.OAuth2UserCustomService;
 import com.jeongmo.blog.service.CustomUserDetailService;
+import com.jeongmo.blog.service.RefreshTokenService;
+import com.jeongmo.blog.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,23 +18,27 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.servlet.util.matcher.MvcRequestMatcher;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 
 @RequiredArgsConstructor
 @Configuration
-
 public class OAuth2WebConfig {
 
 
     private static final String LOGIN = "/login";
     private static final String HOME = "/home";
-    private final CustomUserDetailService service;
+    private final CustomUserDetailService customUserDetailService;
+    private final TokenProvider tokenProvider;
+    private final OAuth2UserCustomService oAuth2UserCustomService;
+    private final RefreshTokenService refreshTokenService;
 
     @Bean
     WebSecurityCustomizer configure() {
@@ -52,13 +62,25 @@ public class OAuth2WebConfig {
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http, MvcRequestMatcher.Builder mvc) throws Exception {
         http
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .addFilterBefore(tokenAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
+                .oauth2Login(oauth2 -> oauth2
+                        .loginPage(LOGIN).authorizationEndpoint(customizer ->
+                                customizer.authorizationRequestRepository(oAuth2BasedOnCookieRepository()))
+                        .successHandler(oAuth2SuccessfulHandler())
+                        .userInfoEndpoint(userInfo ->
+                                userInfo.userService(oAuth2UserCustomService))
+                )
                 .authorizeHttpRequests(request -> request
-                        .requestMatchers(mvc.pattern(LOGIN)).permitAll()
-                        .requestMatchers(mvc.pattern("/signup")).permitAll()
-                        .requestMatchers(mvc.pattern("/user")).permitAll()
-                        .requestMatchers(mvc.pattern("/api/email/{email}")).permitAll() // Must input with {}
-                        .requestMatchers(mvc.pattern(HOME)).permitAll()
-                        .anyRequest().authenticated())
+//                        .requestMatchers(mvc.pattern(LOGIN)).permitAll()
+//                        .requestMatchers(mvc.pattern("/signup")).permitAll()
+//                        .requestMatchers(mvc.pattern("/user")).permitAll()
+//                        .requestMatchers(mvc.pattern("/api/email/{email}")).permitAll() // Must input with {}
+//                        .requestMatchers(mvc.pattern(HOME)).permitAll()
+                        .requestMatchers(mvc.pattern("/api/article/**")).authenticated()
+                        .requestMatchers(mvc.pattern("/api/category/**")).authenticated()
+                        .requestMatchers(mvc.pattern("/api/comment/**")).authenticated()
+                        .anyRequest().permitAll())
                 .formLogin(login ->
                         login.loginPage(LOGIN)
                                 .defaultSuccessUrl(HOME)
@@ -75,7 +97,7 @@ public class OAuth2WebConfig {
     AuthenticationManager authenticationManager(HttpSecurity http, BCryptPasswordEncoder passwordEncoder) throws Exception {
         AuthenticationManagerBuilder builder = http.getSharedObject(AuthenticationManagerBuilder.class);
 
-        builder.userDetailsService(service)
+        builder.userDetailsService(customUserDetailService)
                 .passwordEncoder(passwordEncoder);
 
         return builder.build();
@@ -84,7 +106,7 @@ public class OAuth2WebConfig {
     @Bean
     AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
-        provider.setUserDetailsService(service);
+        provider.setUserDetailsService(customUserDetailService);
         provider.setPasswordEncoder(passwordEncoder());
         provider.setHideUserNotFoundExceptions(false);
         return provider;
@@ -115,5 +137,20 @@ public class OAuth2WebConfig {
             response.sendRedirect("/login?error=" + errorMsg);
             // redirect URL contains error message to use error message in html and js
         };
+    }
+
+    @Bean
+    TokenAuthenticationFilter tokenAuthenticationFilter() {
+        return new TokenAuthenticationFilter(tokenProvider);
+    }
+
+    @Bean
+    OAuth2BasedOnCookieRepository oAuth2BasedOnCookieRepository() {
+        return new OAuth2BasedOnCookieRepository();
+    }
+
+    @Bean
+    OAuth2SuccessfulHandler oAuth2SuccessfulHandler() {
+        return new OAuth2SuccessfulHandler(tokenProvider, refreshTokenService, customUserDetailService);
     }
 }

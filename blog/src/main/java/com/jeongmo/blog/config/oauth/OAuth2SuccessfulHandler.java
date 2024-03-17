@@ -2,13 +2,16 @@ package com.jeongmo.blog.config.oauth;
 
 import com.jeongmo.blog.config.jwt.TokenProvider;
 import com.jeongmo.blog.domain.User;
+import com.jeongmo.blog.service.CustomUserDetailService;
 import com.jeongmo.blog.service.RefreshTokenService;
+import com.jeongmo.blog.service.UserService;
 import com.jeongmo.blog.util.cookie.CookieUtil;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -22,6 +25,7 @@ public class OAuth2SuccessfulHandler extends SimpleUrlAuthenticationSuccessHandl
 
     private final TokenProvider tokenProvider;
     private final RefreshTokenService refreshTokenService;
+    private final CustomUserDetailService customUserDetailService;
 
     private static final String REFRESH_TOKEN_COOKIE_NAME = "Refresh_Token";
     private static final Duration REFRESH_TOKEN_DURATION = Duration.ofDays(1);
@@ -30,7 +34,8 @@ public class OAuth2SuccessfulHandler extends SimpleUrlAuthenticationSuccessHandl
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
-        User user = (User) authentication.getPrincipal();
+        OAuth2User oAuth2user = (OAuth2User) authentication.getPrincipal();
+        User user = (User) customUserDetailService.loadUserByUsername(oAuth2user.getAttribute("email"));
 
         String refreshToken = tokenProvider.generateToken(user, REFRESH_TOKEN_DURATION);
         refreshTokenService.saveOrUpdateRefreshToken(user.getId(), refreshToken);
