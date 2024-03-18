@@ -1,6 +1,9 @@
 package com.jeongmo.blog.config.jwt;
 
 import com.jeongmo.blog.domain.User;
+import com.jeongmo.blog.repository.UserRepository;
+import com.jeongmo.blog.service.CustomUserDetailService;
+import com.jeongmo.blog.service.UserService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Header;
 import io.jsonwebtoken.Jwts;
@@ -20,6 +23,7 @@ import java.util.Set;
 @Service
 public class TokenProvider {
     private final JwtProperties jwtProperties;
+    private final CustomUserDetailService customUserDetailService;
 
     public String generateToken(User user, Duration expiredAt) {
         Date now = new Date();
@@ -54,12 +58,9 @@ public class TokenProvider {
         Claims claims = getClaims(token);
 
         Set<SimpleGrantedAuthority> authorities = Collections.singleton(new SimpleGrantedAuthority("ROLE_USER"));
+        User user = (User) customUserDetailService.loadUserByUsername(claims.getSubject());
 
-        return new UsernamePasswordAuthenticationToken(
-                new org.springframework.security.core.userdetails.User(claims.getSubject(), "", authorities),
-                token,
-                authorities
-        );
+        return new UsernamePasswordAuthenticationToken(user, "", authorities);
     }
 
     public Long getUserId(String token) {
