@@ -32,10 +32,12 @@
     <div class="article-list-body-container">
         <div class="no-article" th:if="${articles.size()} == 0">No articles</div>
         <div class="articles-list-body" th:if="${articles.size()} != 0" th:each="article : ${articles}">
+            <input type="hidden" class="article-list-article-id" th:value="${article.id}">
             <div id="article-list-id-thyme"
                  th:text="${totalArticleSize} - ${pageSize} * (${currentPage} - 1) - ${articleStat.index}"></div>
-            <div id="article-list-title-thyme">
-                <a th:href="@{/article/{id}(id = ${article.id})}" th:text="${article.title}"></a>
+            <div class="article-list-title-thyme">
+<!--                <a th:href="@{/article/{id}(id = ${article.id})}" th:text="${article.title}"></a>-->
+                <p th:text="${article.title}"></p>
             </div>
             <div id="article-list-author">
                 <div id="article-list-author-thyme" th:text="${article.author.getNicknameWithoutCode()}"></div>

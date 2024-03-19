@@ -101,6 +101,7 @@
         </div>
     </div>
     <input type="hidden" id="error-message" th:if="${error}" th:value="${error}">
+</body>
 <script th:src="@{/js/mainPage.js}"></script>
 <script th:src="@{/js/background.js}"></script>
 <script th:src="@{/js/sidebar.js}"></script>
@@ -109,5 +110,4 @@
 <script th:if="${error}">
     alert(document.getElementById('error-message').value);
 </script>
-</body>
 </html>
