@@ -16,3 +16,9 @@ if (userInfo) {
         hoverMenu.style.display = "none";
     })
 }
+
+const urlParam = new URLSearchParams(location.search);
+if (urlParam.has("token")) {
+    let token = urlParam.get("token");
+    localStorage.setItem("accessToken", token);
+}
