@@ -70,7 +70,7 @@ public class User implements UserDetails{
      * @return Return nickname of nickname#0000 form
      */
     public String getNicknameWithoutCode() {
-        return new StringTokenizer(this.nickname, "#").nextToken();
+        return this.nickname.contains("#") ? new StringTokenizer(this.nickname, "#").nextToken() : this.nickname;
     }
 
     /**
@@ -79,7 +79,7 @@ public class User implements UserDetails{
      * @return The code of nickname
      */
     public String getNicknameCode() {
-        return this.nickname.split("#")[1];
+        return this.nickname.contains("#") ? this.nickname.split("#")[1] : null;
     }
 
     public void setNickname(String nickname) {
