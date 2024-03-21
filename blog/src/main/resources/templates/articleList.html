@@ -36,8 +36,8 @@
             <div id="article-list-id-thyme"
                  th:text="${totalArticleSize} - ${pageSize} * (${currentPage} - 1) - ${articleStat.index}"></div>
             <div class="article-list-title-thyme">
-<!--                <a th:href="@{/article/{id}(id = ${article.id})}" th:text="${article.title}"></a>-->
-                <p th:text="${article.title}"></p>
+                <a th:href="@{/article/{id}(id = ${article.id})}" th:text="${article.title}"></a>
+<!--                <p th:text="${article.title}"></p>-->
             </div>
             <div id="article-list-author">
                 <div id="article-list-author-thyme" th:text="${article.author.getNicknameWithoutCode()}"></div>
