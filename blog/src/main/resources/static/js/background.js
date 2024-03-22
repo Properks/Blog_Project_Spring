@@ -87,12 +87,20 @@ function httpApiRequest(url, method, body) {
                         refreshToken: getCookie('refresh_token')
                     })
                 })
-                    .then(response => response.json())
                     .then(response => {
-                        const token = response.accessToken
+                        if (response.status !== 200) {
+                            throw new Error('Network response was not ok (' + response.status + ')');
+                        }
+                        return response.json()
+                    })
+                    .then(data => {
+                        const token = data.accessToken;
                         localStorage.setItem('access_token', token)
                         httpApiRequest(method, url, body);
                     })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
             }
             else if (!response.ok && !(response.status === 201)) {
                 throw new Error('Network response was not ok');
@@ -105,12 +113,12 @@ function httpApiRequest(url, method, body) {
 }
 
 function getCookie(key) {
-    var result = null;
-    var cookie = document.cookie.split(';');
+    let result = null;
+    let cookie = document.cookie.split(';');
     cookie.some(function (item) {
         item = item.replace(' ', '');
 
-        var dic = item.split('=');
+        let dic = item.split('=');
 
         if (key === dic[0]) {
             result = dic[1];
