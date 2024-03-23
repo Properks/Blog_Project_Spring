@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class TokenApiController {
 
-    private RefreshTokenService refreshTokenService;
+    private final RefreshTokenService refreshTokenService;
 
     @PostMapping("/api/token")
     public ResponseEntity<AccessTokenResponse> createAccess(@RequestBody AccessTokenRequest request) {
