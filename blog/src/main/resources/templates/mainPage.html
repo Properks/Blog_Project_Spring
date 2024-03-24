@@ -16,25 +16,25 @@
         <div class="top-header-container">
             <div class="top-header-wrap">
                 <div class="home-page-button"><a th:href="@{/home}">blog</a></div>
-                <div class="btn-container" th:if="${loginIn}">
-                    <input type="hidden" id="user-id" th:value="${loginIn.id}">
-                    <input type="hidden" id="user-nickname" th:value="${loginIn.nicknameWithoutCode}">
+                <div class="btn-container-login">
+                    <input type="hidden" id="user-id">
+                    <input type="hidden" id="user-nickname">
                     <div class="user-info-container">
-                        <div class="user-info-btn" th:text="|Username: ${loginIn.getNicknameWithoutCode()}|"
-                        th:attr="hover-text=${loginIn.nickname}">
+                        <div class="user-info-btn" data-hover-text="">
                         </div>
                         <div id="home-page-user-hover-menu">
                             <div>
-                                <a th:href="@{/home(nickname=${loginIn.nickname})}">my article</a>
+                                <a id="home-page-hover-menu-my-article">
+                                    my article</a>
                             </div>
                             <div>
-                                <a th:href="@{/user/info}">my information</a>
+                                <a id="home-page-hover-menu-my-info">my information</a>
                             </div>
                         </div>
                     </div>
                     <div class="logout-btn" th:onclick="|location.href='@{/logout}'|">logout</div>
                 </div>
-                <div class="btn-container" th:unless="${loginIn}">
+                <div class="btn-container-not-login" th:unless="${loginIn}">
                     <div class="login-btn"><a th:href="@{/login}">login</a></div>
                     <div class="sign-up-btn"><a th:href="@{/signup}">sign up</a></div>
                 </div>
