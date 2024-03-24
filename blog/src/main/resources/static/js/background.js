@@ -128,3 +128,42 @@ function getCookie(key) {
 
     return result;
 }
+
+//FIXME: 1. Change everything related to user info, 2. How to check logout.
+getUser();
+
+function getUser() {
+    if (localStorage.getItem("accessToken") == null) {
+        document.querySelector(".btn-container-login").style.display = "none";
+        document.querySelector(".btn-container-not-login").style.display = "block";
+    }
+    else {
+        fetch('/api/user', {
+            method: "GET",
+            headers: {
+                "Authorization": "Bearer " + localStorage.getItem("accessToken")
+            }
+        })
+            .then(response => {
+                if (response.status !== 200) {
+                    throw new Error("Http status is not ok");
+                }
+                return response.json();
+            })
+            .then(data => {
+                setUserInfo(data.id, data.email, data.nicknameWithoutCode, data.nickname)
+            })
+    }
+}
+
+function setUserInfo(id, email, nicknameWithoutCode, nickname) {
+    document.querySelector(".btn-container-login").style.display = "block";
+    document.querySelector(".btn-container-not-login").style.display = "none";
+
+    document.getElementById("user-id").value = id;
+    document.getElementById("user-nickname").value = nicknameWithoutCode;
+    document.querySelector(".user-info-btn").textContent = nicknameWithoutCode;
+    document.querySelector(".user-info-btn").setAttribute("data-hover-text", nickname);
+    document.getElementById("home-page-hover-menu-my-article")
+        .setAttribute('href', "/home?nickname=" + nickname);
+}
