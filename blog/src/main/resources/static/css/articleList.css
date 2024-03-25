@@ -13,7 +13,7 @@
 .article-list-search-article-body {width: fit-content; margin: 0 auto; display: flex;}
 
 #article-list-searched-word-container, #show-selected-category {margin: 5px; width:90%;}
-.article-list-title-thyme p {margin: 0; padding: 0; color:inherit; text-decoration: none;}
+.article-list-title-thyme a {margin: 0; padding: 0; color:inherit; text-decoration: none;}
 #article-list-author {position:relative; display: inline-block;}
 #article-list-author-thyme:hover + .article-list-author-hover {display: block;}
 #article-list-create-article-btn {text-transform: capitalize}
