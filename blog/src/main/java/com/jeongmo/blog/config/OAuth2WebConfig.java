@@ -83,8 +83,8 @@ public class OAuth2WebConfig {
                         .anyRequest().permitAll())
                 .formLogin(login ->
                         login.loginPage(LOGIN)
-                                .defaultSuccessUrl(HOME)
-                                .failureHandler(failureHandler())) // Add failure handler when login is failed
+                                .failureHandler(failureHandler()) // Add failure handler when login is failed
+                                .successHandler(formLoginSuccessfulHandler())) // Add successful handler
                 .logout(logout ->
                         logout.logoutUrl("/logout")
                                 .logoutSuccessUrl(HOME)
@@ -152,5 +152,10 @@ public class OAuth2WebConfig {
     @Bean
     OAuth2SuccessfulHandler oAuth2SuccessfulHandler() {
         return new OAuth2SuccessfulHandler(tokenProvider, refreshTokenService, customUserDetailService);
+    }
+
+    @Bean
+    FormLoginSuccessfulHandler formLoginSuccessfulHandler() {
+        return new FormLoginSuccessfulHandler(tokenProvider, refreshTokenService);
     }
 }
