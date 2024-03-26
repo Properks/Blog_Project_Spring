@@ -21,6 +21,7 @@ public class FormLoginSuccessfulHandler implements AuthenticationSuccessHandler{
     private final RefreshTokenService refreshTokenService;
 
     private static final String REFRESH_TOKEN_COOKIE_NAME = "Refresh_Token";
+    private static final String ACCESS_TOKEN_COOKIE_NAME = "Access_Token";
     private static final Duration REFRESH_TOKEN_DURATION = Duration.ofDays(1);
     private static final Duration ACCESS_TOKEN_DURATION = Duration.ofHours(2);
 
@@ -33,7 +34,8 @@ public class FormLoginSuccessfulHandler implements AuthenticationSuccessHandler{
         CookieUtil.addCookie(response, REFRESH_TOKEN_COOKIE_NAME, refreshToken, (int) REFRESH_TOKEN_DURATION.toSeconds());
 
         String accessToken = tokenProvider.generateToken(user, ACCESS_TOKEN_DURATION);
+        CookieUtil.addCookie(response, ACCESS_TOKEN_COOKIE_NAME, accessToken, (int) ACCESS_TOKEN_DURATION.toSeconds());
 
-        response.sendRedirect("/home?token=" + accessToken);
+        response.sendRedirect("/home");
     }
 }

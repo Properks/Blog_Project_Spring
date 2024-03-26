@@ -1,26 +1,37 @@
 
 const userInfo = document.querySelector('.user-info-btn');
-const userNickname = (userInfo) ? userInfo.textContent.replace("Username: ", "") : null;
+let userNickname = null;
 
 // function that represent nickname with code
 if (userInfo) {
     const userInfoContainer = document.querySelector(".user-info-container"); // For addEventListener
-    const userOriginalNickname = userInfo.textContent;
     const hoverMenu = document.getElementById("home-page-user-hover-menu"); // Show menu
     userInfoContainer.addEventListener('mouseover', () => {
-        userInfo.textContent = 'Username: ' + userInfo.getAttribute('hover-text');
+        userInfo.textContent = 'Username: ' + userInfo.getAttribute('data-hover-text');
         hoverMenu.style.display = "block";
     })
     userInfoContainer.addEventListener('mouseout', () => {
-        userInfo.textContent = userOriginalNickname;
+        userInfo.textContent = "Username: " + userNickname;
         hoverMenu.style.display = "none";
     })
 }
 
-const urlParam = new URLSearchParams(location.search);
-if (urlParam.has("token")) {
-    let token = urlParam.get("token");
+if (getCookie("Access_Token") != null) {
+    let token = getCookie("Access_Token");
     localStorage.setItem("accessToken", token);
+    deleteCookie("Access_Token");
+}
+
+const logoutBtn = document.querySelector(".logout-btn");
+if (logoutBtn) {
+    logoutBtn.addEventListener("click", () => {
+        if (localStorage.getItem("accessToken") != null) {
+            localStorage.removeItem("accessToken");
+        }
+        if (getCookie('Refresh_Token') != null) {
+            deleteCookie('Refresh_Token');
+        }
+    })
 }
 
 // function httpViewRequest(url) {
@@ -75,7 +86,7 @@ function httpApiRequest(url, method, body) {
 
     fetch(request)
         .then(response => {
-            const refreshToken = getCookie('refresh_token');
+            const refreshToken = getCookie('Refresh_Token');
             if (response.status === 401 && refreshToken) {
                 fetch ('/api/token', {
                     method: 'POST',
@@ -129,6 +140,11 @@ function getCookie(key) {
     return result;
 }
 
+function deleteCookie(cookieName) {
+    document.cookie = cookieName + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+}
+
+
 //FIXME: 1. Change everything related to user info, 2. How to check logout.
 getUser();
 
@@ -162,7 +178,8 @@ function setUserInfo(id, email, nicknameWithoutCode, nickname) {
 
     document.getElementById("user-id").value = id;
     document.getElementById("user-nickname").value = nicknameWithoutCode;
-    document.querySelector(".user-info-btn").textContent = nicknameWithoutCode;
+    userNickname = nicknameWithoutCode;
+    document.querySelector(".user-info-btn").textContent = "Username: " + nicknameWithoutCode;
     document.querySelector(".user-info-btn").setAttribute("data-hover-text", nickname);
     document.getElementById("home-page-hover-menu-my-article")
         .setAttribute('href', "/home?nickname=" + nickname);

@@ -28,6 +28,7 @@ public class OAuth2SuccessfulHandler extends SimpleUrlAuthenticationSuccessHandl
     private final CustomUserDetailService customUserDetailService;
 
     private static final String REFRESH_TOKEN_COOKIE_NAME = "Refresh_Token";
+    private static final String ACCESS_TOKEN_COOKIE_NAME = "Access_Token";
     private static final Duration REFRESH_TOKEN_DURATION = Duration.ofDays(1);
     private static final Duration ACCESS_TOKEN_DURATION = Duration.ofHours(2);
     private static final String REDIRECT_URL = "/home";
@@ -42,18 +43,10 @@ public class OAuth2SuccessfulHandler extends SimpleUrlAuthenticationSuccessHandl
         CookieUtil.addCookie(response, REFRESH_TOKEN_COOKIE_NAME, refreshToken, (int) REFRESH_TOKEN_DURATION.toSeconds());
 
         String accessToken = tokenProvider.generateToken(user, ACCESS_TOKEN_DURATION);
-        String url = getRedirectUrl(accessToken);
+        CookieUtil.addCookie(response, ACCESS_TOKEN_COOKIE_NAME, accessToken, (int) ACCESS_TOKEN_DURATION.toSeconds());
 
         super.clearAuthenticationAttributes(request);
 
-        getRedirectStrategy().sendRedirect(request, response, url);
-
-    }
-
-    private String getRedirectUrl(String accessToken) {
-        return UriComponentsBuilder.fromUriString(REDIRECT_URL)
-                .queryParam("token", accessToken)
-                .build()
-                .toUriString();
+        response.sendRedirect(REDIRECT_URL);
     }
 }
