@@ -71,6 +71,13 @@ if (logoutBtn) {
 //         });
 // }
 
+/**
+ * Function that send request with access token, or with refresh token when access token is expired.
+ *
+ * @param url The url which you send request
+ * @param method The method, CRUD
+ * @param body The request body
+ */
 function httpApiRequest(url, method, body) {
     let token = localStorage.getItem("accessToken");
     let header = new Headers();
@@ -123,6 +130,12 @@ function httpApiRequest(url, method, body) {
         });
 }
 
+/**
+ * Function which get cookie.
+ *
+ * @param key The name of cookie
+ * @returns The value of cookie, When it doesn't exist, return null
+ */
 function getCookie(key) {
     let result = null;
     let cookie = document.cookie.split(';');
@@ -140,6 +153,10 @@ function getCookie(key) {
     return result;
 }
 
+/**
+ * Function which delete cookie
+ * @param cookieName The name of cookie which will be deleted
+ */
 function deleteCookie(cookieName) {
     document.cookie = cookieName + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
 }
@@ -148,6 +165,9 @@ function deleteCookie(cookieName) {
 //FIXME: 1. Change everything related to user info, 2. How to check logout.
 getUser();
 
+/**
+ * Function that get user with fetch Api
+ */
 function getUser() {
     if (localStorage.getItem("accessToken") == null) {
         document.querySelector(".btn-container-login").style.display = "none";
@@ -172,6 +192,13 @@ function getUser() {
     }
 }
 
+/**
+ * Set User info in html
+ * @param id The id of user
+ * @param email The email of user
+ * @param nicknameWithoutCode The nickname without code of user
+ * @param nickname The nickname
+ */
 function setUserInfo(id, email, nicknameWithoutCode, nickname) {
     document.querySelector(".btn-container-login").style.display = "block";
     document.querySelector(".btn-container-not-login").style.display = "none";
