@@ -71,8 +71,8 @@
                     <h4>create comment</h4>
                 </div>
                 <div class="article-view-create-comment-body">
-                    <input id="article-view-create-comment-author-id" type="hidden" th:value="${loginIn.id}">
-                    <p th:text="${loginIn.nicknameWithoutCode}"></p>
+                    <input id="article-view-create-comment-author-id" type="hidden">
+                    <p></p>
                     <textarea name="content" id="article-view-create-comment-content" cols="30" rows="10"
                               placeholder="comment"></textarea>
                     <button id="article-view-create-comment-btn">create</button>
@@ -82,11 +82,11 @@
         <div class="article-view-reply-body">
             <input type="hidden" class="article-view-parent-comment-id">
             <div class="article-view-reply-author">
-                <input type="hidden" th:value="${loginIn.id}">
+                <input type="hidden">
                 <span class="material-symbols-outlined">
                         subdirectory_arrow_right
                     </span>
-                <p th:text="${loginIn.nicknameWithoutCode}"></p>
+                <p></p>
             </div>
             <div class="article-view-reply-content">
                 <textarea cols="30" rows="1" class="article-view-reply-textarea"></textarea>

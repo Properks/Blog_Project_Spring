@@ -203,6 +203,7 @@ function setUserInfo(id, email, nicknameWithoutCode, nickname) {
     document.querySelector(".btn-container-login").style.display = "block";
     document.querySelector(".btn-container-not-login").style.display = "none";
 
+    //login
     document.getElementById("user-id").value = id;
     document.getElementById("user-nickname").value = nicknameWithoutCode;
     userNickname = nicknameWithoutCode;
@@ -210,4 +211,12 @@ function setUserInfo(id, email, nicknameWithoutCode, nickname) {
     document.querySelector(".user-info-btn").setAttribute("data-hover-text", nickname);
     document.getElementById("home-page-hover-menu-my-article")
         .setAttribute('href', "/home?nickname=" + nickname);
+
+    //comment, reply
+    let articleViewCommentAuthor = document.querySelector(".article-view-create-comment-body");
+    let articleViewReplyAuthor = document.querySelector(".article-view-reply-author");
+    articleViewCommentAuthor.querySelector("input").value = id;
+    articleViewReplyAuthor.querySelector("input").value = id;
+    articleViewCommentAuthor.querySelector("p").textContent = nicknameWithoutCode;
+    articleViewReplyAuthor.querySelector("p").textContent = nicknameWithoutCode;
 }
