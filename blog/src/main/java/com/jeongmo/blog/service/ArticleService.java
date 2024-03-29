@@ -124,7 +124,7 @@ public class ArticleService {
      * @param nickname The nickname of article writer (Exactly same)
      * @param writer The nickname of article writer (Containing)
      */
-    public List<Article> searchArticles(Long categoryId, String titleContent, String nickname, String writer) {
+    public List<Article> searchArticles(Long categoryId, String titleContent, Long userId, String writer) {
         List<Article> articles = getArticles();
         if (titleContent != null) {
             String[] keywords = titleContent.split(" ");
@@ -137,10 +137,10 @@ public class ArticleService {
         else if (writer != null) {
             articles = articleRepository.getArticleByAuthor_NicknameContaining(writer);
         }
-        if (nickname != null){
+        if (userId != null){
             articles = articles
                     .stream()
-                    .filter(article -> article.getAuthor().getNickname().equals(nickname))
+                    .filter(article -> article.getAuthor().getId().equals(userId))
                     .toList();
         }
         if (categoryId != null) {

@@ -210,7 +210,7 @@ function setUserInfo(id, email, nicknameWithoutCode, nickname) {
     document.querySelector(".user-info-btn").textContent = "Username: " + nicknameWithoutCode;
     document.querySelector(".user-info-btn").setAttribute("data-hover-text", nickname);
     document.getElementById("home-page-hover-menu-my-article")
-        .setAttribute('href', "/home?nickname=" + nickname);
+        .setAttribute('href', "/home?userId=" + id);
 
     //comment, reply
     let articleViewCommentAuthor = document.querySelector(".article-view-create-comment-body");

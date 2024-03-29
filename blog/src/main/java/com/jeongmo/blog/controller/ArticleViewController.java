@@ -43,7 +43,7 @@ public class ArticleViewController {
     public String mainPage(@RequestParam(required = false, defaultValue = "1") Integer page,
                            @RequestParam(required = false, defaultValue = "10") Integer size,
                            @RequestParam(required = false) Long categoryId,
-                           @RequestParam(required = false) String nickname,
+                           @RequestParam(required = false) Long userId,
                            @RequestParam(required = false) String titleContent,
                            @RequestParam(required = false) String writer,
                            Model model,
@@ -53,7 +53,7 @@ public class ArticleViewController {
 
         // Get articles
         List<ArticleViewResponse> articles = new ArrayList<>(articleService.searchArticles(
-                categoryId, titleContent, nickname, writer)
+                categoryId, titleContent, userId, writer)
                 .stream()
                 .map(ArticleViewResponse::new)
                 .toList());
