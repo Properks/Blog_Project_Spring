@@ -121,7 +121,7 @@ public class ArticleService {
      *
      * @param categoryId The category id of article which you want to find
      * @param titleContent The keywords of title or content which you want to find (Containing)
-     * @param nickname The nickname of article writer (Exactly same)
+     * @param userId The id of article writer (Exactly same)
      * @param writer The nickname of article writer (Containing)
      */
     public List<Article> searchArticles(Long categoryId, String titleContent, Long userId, String writer) {
