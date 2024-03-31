@@ -187,7 +187,7 @@ function getUser() {
                 return response.json();
             })
             .then(data => {
-                setUserInfo(data.id, data.email, data.nicknameWithoutCode, data.nickname)
+                setUserInfo(data.id, data.email, data.nicknameWithoutCode, data.nickname, data.nicknameCode)
             })
     }
 }
@@ -198,8 +198,9 @@ function getUser() {
  * @param email The email of user
  * @param nicknameWithoutCode The nickname without code of user
  * @param nickname The nickname
+ * @param nicknameCode The code of nickname
  */
-function setUserInfo(id, email, nicknameWithoutCode, nickname) {
+function setUserInfo(id, email, nicknameWithoutCode, nickname, nicknameCode) {
     document.querySelector(".btn-container-login").style.display = "block";
     document.querySelector(".btn-container-not-login").style.display = "none";
 
@@ -213,10 +214,22 @@ function setUserInfo(id, email, nicknameWithoutCode, nickname) {
         .setAttribute('href', "/home?userId=" + id);
 
     //comment, reply
-    let articleViewCommentAuthor = document.querySelector(".article-view-create-comment-body");
-    let articleViewReplyAuthor = document.querySelector(".article-view-reply-author");
-    articleViewCommentAuthor.querySelector("input").value = id;
-    articleViewReplyAuthor.querySelector("input").value = id;
-    articleViewCommentAuthor.querySelector("p").textContent = nicknameWithoutCode;
-    articleViewReplyAuthor.querySelector("p").textContent = nicknameWithoutCode;
+    let commentContainer = document.querySelector(".article-view-comment-container");
+    if (commentContainer) {
+        let articleViewCommentAuthor = document.querySelector(".article-view-create-comment-body");
+        let articleViewReplyAuthor = document.querySelector(".article-view-reply-author");
+        articleViewCommentAuthor.querySelector("input").value = id;
+        articleViewReplyAuthor.querySelector("input").value = id;
+        articleViewCommentAuthor.querySelector("p").textContent = nicknameWithoutCode;
+        articleViewReplyAuthor.querySelector("p").textContent = nicknameWithoutCode;
+    }
+
+    //user info
+    let infoContainer = document.querySelector(".information-myInfo");
+    if (infoContainer) {
+        infoContainer.querySelector("#information-my-email").value = email;
+        infoContainer.querySelector("#information-original-nickname").value = nickname;
+        infoContainer.querySelector("#information-my-nickname").value = nicknameWithoutCode;
+        infoContainer.querySelector("#information-my-nickname-code").value = nicknameCode;
+    }
 }

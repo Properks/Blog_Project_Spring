@@ -15,22 +15,27 @@
     <div class="top-header-container">
         <div class="top-header-wrap">
             <div class="home-page-button"><a th:href="@{/home}">blog</a></div>
-            <div class="btn-container" th:if="${loginIn}">
-                <input type="hidden" id="user-id" th:value="${loginIn.id}">
+            <div class="btn-container-login">
+                <input type="hidden" id="user-id">
+                <input type="hidden" id="user-nickname">
                 <div class="user-info-container">
-                    <div class="user-info-btn" th:text="|Username: ${loginIn.getNicknameWithoutCode()}|"
-                         th:attr="hover-text=${loginIn.nickname}">
+                    <div class="user-info-btn" data-hover-text="">
                     </div>
                     <div id="home-page-user-hover-menu">
                         <div>
-                            <a th:href="@{/home(nickname=${loginIn.nickname})}">my article</a>
+                            <a id="home-page-hover-menu-my-article">
+                                my article</a>
                         </div>
                         <div>
-                            <a th:href="@{/user/info}">my information</a>
+                            <a id="home-page-hover-menu-my-info" th:href="@{/user/info}">my information</a>
                         </div>
                     </div>
                 </div>
                 <div class="logout-btn" th:onclick="|location.href='@{/logout}'|">logout</div>
+            </div>
+            <div class="btn-container-not-login">
+                <div class="login-btn"><a th:href="@{/login}">login</a></div>
+                <div class="sign-up-btn"><a th:href="@{/signup}">sign up</a></div>
             </div>
         </div>
     </div>
@@ -57,19 +62,17 @@
                     <div class="information-myInfo" th:if="${tab} == 'my_info'">
                         <div class="information-email-container">
                             <label for="information-my-email">email: </label>
-                            <input type="text" id="information-my-email" th:value="${loginIn.email}" readonly>
+                            <input type="text" id="information-my-email" readonly>
                         </div>
 
                         <div class="information-nickname-container">
-                            <input type="hidden" id="information-original-nickname" th:value="${loginIn.nickname}">
+                            <input type="hidden" id="information-original-nickname">
                             <label for="information-my-email">nickname: </label>
                             <input type="text" id="information-my-nickname" name="nickname"
-                                   th:value="${loginIn.nicknameWithoutCode}"
-                                minlength="3" maxlength="20">
+                                minlength="3" maxlength="20" required>
                             #
                             <input type="text" id="information-my-nickname-code" name="code"
-                                    th:value="${loginIn.nicknameCode}"
-                                   minlength="1" maxlength="5">
+                                   minlength="1" maxlength="5" required>
                         </div>
                         <div id="information-change-nickname-error-message">
 
