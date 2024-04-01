@@ -105,7 +105,7 @@ public class UserApiController {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build(); // Invalid password (401 error)
     }
 
-    @GetMapping("/api/user")
+    @PostMapping("/api/user")
     public ResponseEntity<UserResponse> getAuthentication(Authentication authentication) {
         boolean isNotAuthenticated =
                 authentication == null || authentication.getPrincipal() == null || !(authentication.getPrincipal() instanceof User);

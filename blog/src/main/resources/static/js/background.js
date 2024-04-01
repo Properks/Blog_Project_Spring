@@ -175,7 +175,7 @@ function getUser() {
     }
     else {
         fetch('/api/user', {
-            method: "GET",
+            method: "POST",
             headers: {
                 "Authorization": "Bearer " + localStorage.getItem("accessToken")
             }
