@@ -1,9 +1,7 @@
 package com.jeongmo.blog.config.jwt;
 
 import com.jeongmo.blog.domain.User;
-import com.jeongmo.blog.repository.UserRepository;
 import com.jeongmo.blog.service.CustomUserDetailService;
-import com.jeongmo.blog.service.UserService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Header;
 import io.jsonwebtoken.Jwts;

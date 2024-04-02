@@ -6,15 +6,12 @@ import com.jeongmo.blog.config.oauth.OAuth2SuccessfulHandler;
 import com.jeongmo.blog.config.oauth.OAuth2UserCustomService;
 import com.jeongmo.blog.service.CustomUserDetailService;
 import com.jeongmo.blog.service.RefreshTokenService;
-import com.jeongmo.blog.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer;
@@ -56,7 +53,7 @@ public class OAuth2WebConfig {
     MvcRequestMatcher.Builder mvc(HandlerMappingIntrospector intro) {
         return new MvcRequestMatcher.Builder(intro);
     }
-    // This function get HandlerMappingIntrospector from spring(?) and return MvcRequestMatcher.builder
+    // This function get param from Bean and return MvcRequestMatcher.builder
     // I know reason why filterChain has HttpSecurity as parameter like this function
 
     @Bean
@@ -72,11 +69,6 @@ public class OAuth2WebConfig {
                                 userInfo.userService(oAuth2UserCustomService))
                 )
                 .authorizeHttpRequests(request -> request
-//                        .requestMatchers(mvc.pattern(LOGIN)).permitAll()
-//                        .requestMatchers(mvc.pattern("/signup")).permitAll()
-//                        .requestMatchers(mvc.pattern("/user")).permitAll()
-//                        .requestMatchers(mvc.pattern("/api/email/{email}")).permitAll() // Must input with {}
-//                        .requestMatchers(mvc.pattern(HOME)).permitAll()
                         .requestMatchers(mvc.pattern("/api/article/**")).authenticated()
                         .requestMatchers(mvc.pattern("/api/category/**")).authenticated()
                         .requestMatchers(mvc.pattern("/api/comment/**")).authenticated()
@@ -91,16 +83,6 @@ public class OAuth2WebConfig {
                                 .invalidateHttpSession(true))
                 .csrf(CsrfConfigurer<HttpSecurity>::disable);
         return http.build();
-    }
-
-    @Bean
-    AuthenticationManager authenticationManager(HttpSecurity http, BCryptPasswordEncoder passwordEncoder) throws Exception {
-        AuthenticationManagerBuilder builder = http.getSharedObject(AuthenticationManagerBuilder.class);
-
-        builder.userDetailsService(customUserDetailService)
-                .passwordEncoder(passwordEncoder);
-
-        return builder.build();
     }
 
     @Bean
