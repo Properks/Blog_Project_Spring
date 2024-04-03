@@ -1,2 +1,35 @@
 # Blog_Project_Spring
-Blog Project with Spring boot, Java. Develop following the project in Start_Spring_Boot/project/review_blog.
+
+## 프로젝트 목적
+이 프로젝트는 Spring 프레임워크에 대한 숙련도 향상을 목적으로 합니다. 주요적으로 Form 로그인 및 OAuth2 로그인을 통한 회원가입과 로그인 구현, 그리고 데이터베이스 설계 및 관리에 대한 숙련도에 초점을 맞춥니다.
+
+## 기술 스택 및 사용된 도구
+
+- Java 20
+- Spring Boot 3.1.3
+- Gradle
+- Thymeleaf
+- MySQL
+- Hibernate
+- HTML/CSS
+- JavaScript
+
+## 주요 구현 기능
+
+- Form 로그인 및 OAuth2 로그인을 통한 회원가입, 로그인 구현
+- 블로그 게시물 작성, 수정, 삭제
+- 댓글, 답글 작성 및 관리
+- 사용자 프로필 설정
+- 데이터베이스 설계 및 관리 (@OneToMany 관계를 활용한 데이터 모델 구현, Repository 함수 설정)
+
+## 기여 방법
+
+이 프로젝트에 기여하고 싶다면 다음과 같은 방법으로 참여할 수 있습니다:
+
+1. 이슈를 제출하여 버그를 보고하거나 새로운 기능을 제안합니다.
+2. Fork하여 개발한 후 Pull Request를 보냅니다.
+3. 문서 작성이나 버그 수정 등의 작업을 진행합니다.
+
+## 연락처
+
+문의 사항이 있으시면 wjdah1402@gmail.com으로 연락주세요.
