@@ -1,105 +1,196 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
-    <link rel="stylesheet" href="../static/css/articleView.css">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Article</title>
+    <link rel="stylesheet" th:href="@{/css/mainPage.css}">
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+    <!--    Navigate before and after-->
 </head>
 <body>
-<div id="article-view-container" >
-    <article>
-        <input type="hidden" id="article-view-id" th:value="${viewArticle.id}">
-        <div class="article-view-title-container">
-            <h4 id="article-view-title" th:text="${viewArticle.title}"
-            th:onclick="|location.href='@{/article/{id} (id = ${viewArticle.id})}'|"></h4>
-            <h5 class="article-view-category" th:text="|Category: ${viewArticle.category.getName()}|"></h5>
-        </div>
-        <div class="article-view-author-container">
-            <p id="article-view-author" th:text="|Writer: ${viewArticle.author.nicknameWithoutCode}|"></p>
-            <p id="article-view-author-hover" th:text="${viewArticle.author.nickname}"></p>
-        </div>
-        <div class="article-view-time-container">
-            <p id="article-view-created-time"
-               th:text="|Created at: ${#temporals.format(viewArticle.createdAt, 'yyyy-MM-dd HH:mm')}|"></p>
-            <span th:if="${viewArticle.updatedAt} != ${viewArticle.createdAt}">
-                <span id="article-view-updated-time"
-                   th:text="|Updated at: ${#temporals.format(viewArticle.updatedAt, 'yyyy-MM-dd HH:mm')}|"></span>
-            </span>
-        </div>
-        <div class="article-view-content-container">
-            <section class="article-view-section">
-                <div style="margin: 5px;" th:each="line : ${#strings.arraySplit(viewArticle.content, '&#10')}">
-                    <p style="margin: 0;" th:text="${line}"></p>
-                </div>
-            </section>
-        </div>
-        <div class="article-view-comment-container">
-            <div class="article-view-comment-title">
-                <h4>comments</h4>
-            </div>
-            <div class="article-view-comment-body" th:if="${comments}" th:each="comment : ${comments}">
-<!--                content-->
-                <input type="hidden" class="article-view-comment-id" th:value="${comment.id}">
-                <div class="article-view-comment-author">
-                    <input type="hidden" th:value="${comment.author.id}">
-                    <span class="material-symbols-outlined" th:if="${comment.parentId} != null">
-                        subdirectory_arrow_right
-                    </span>
-                    <p class="article-view-author-nickname" th:text="${comment.author.nicknameWithoutCode}"></p>
-                </div>
-                <div class="article-view-comment-content">
-                    <div style="margin: 5px;" th:each="line : ${#strings.arraySplit(comment.content, '&#10')}">
-                        <p style="margin: 0;" th:text="${line}"></p>
+<div class="main-page-container">
+    <div class="top-header-container">
+        <div class="top-header-wrap">
+            <div class="home-page-button"><a th:href="@{/home}">blog</a></div>
+            <div class="btn-container-login">
+                <input type="hidden" id="user-id">
+                <input type="hidden" id="user-nickname">
+                <div class="user-info-container">
+                    <div class="user-info-btn" data-hover-text="">
+                    </div>
+                    <div id="home-page-user-hover-menu">
+                        <div>
+                            <a id="home-page-hover-menu-my-article">
+                                my article</a>
+                        </div>
+                        <div>
+                            <a id="home-page-hover-menu-my-info" th:href="@{/user/info}">my information</a>
+                        </div>
                     </div>
                 </div>
+                <div class="logout-btn" th:onclick="|location.href='@{/logout}'|">logout</div>
+            </div>
+            <div class="btn-container-not-login">
+                <div class="login-btn"><a th:href="@{/login}">login</a></div>
+                <div class="sign-up-btn"><a th:href="@{/signup}">sign up</a></div>
+            </div>
+        </div>
+    </div>
 
-<!--                modify-->
-                <div class="article-view-modify-comment-container">
-                    <textarea cols="30" rows="1" class="article-view-modify-comment-textarea"
-                              th:text="${comment.content}"></textarea>
-                    <button class="article-view-cancel-modify-comment-btn">cancel</button>
-                    <button class="article-view-submit-modify-comment-btn">submit</button>
+    <div class="body-container">
+        <div class="main-page-img">
+            <img src="/img/background-img.jpg" th:src="@{/img/background-img.jpg}" alt="background-image">
+        </div>
+
+        <div class="contents-container">
+            <div class="sidebar-container">
+                <div class="sidebar-title">
+                    <h3>side bar</h3>
                 </div>
-                <div class="article-view-comment-button-container">
-                    <button class="article-view-create-reply-btn">reply</button>
-                    <button class="article-view-modify-comment-btn">modify</button>
-                    <button class="article-view-delete-comment-btn">delete</button>
+                <div id="sidebar-all-category">All</div>
+                <div class="sidebar-content" th:if="${categories}">
+                    <ul class="sidebar" th:each="category : ${categories}">
+                        <li>
+                            <input type="hidden" class="category-id" th:value="${category.id}">
+                            <span class="category-name" th:text="${category.name}"></span>
+                            <span class="delete-category-btn" th:unless="${category.children}">-</span>
+                            <span class="create-category-btn">+</span>
+                            <ul th:if="${category.children}"
+                                th:replace="tree :: recursiveTree(${category.children})"></ul>
+                        </li>
+                    </ul>
+                </div>
+                <div class="sidebar-button-container">
+                    <button type="button" id="create-sidebar-btn">new category</button>
+                    <div class="sidebar-edit-btn-container">
+                        <button id="sidebar-edit-btn">edit</button>
+                        <button id="sidebar-edit-done-btn">done</button>
+                    </div>
                 </div>
             </div>
-            <div class="article-view-create-comment-container">
-                <div class="article-view-create-comment-title">
-                    <h4>create comment</h4>
+
+            <div class="article-container">
+                <div class="article-title">
+                    <h3>articles</h3>
                 </div>
-                <div class="article-view-create-comment-body">
-                    <input id="article-view-create-comment-author-id" type="hidden">
-                    <p></p>
-                    <textarea name="content" id="article-view-create-comment-content" cols="30" rows="10"
-                              placeholder="comment"></textarea>
-                    <button id="article-view-create-comment-btn">create</button>
+
+                <!--                    article body-->
+                <div class="article-body" th:if="${viewArticle}">
+                    <div id="article-view-container" >
+                        <article>
+                            <input type="hidden" id="article-view-id" th:value="${viewArticle.id}">
+                            <div class="article-view-title-container">
+                                <h4 id="article-view-title" th:text="${viewArticle.title}"
+                                    th:onclick="|location.href='@{/article/{id} (id = ${viewArticle.id})}'|"></h4>
+                                <h5 class="article-view-category" th:text="|Category: ${viewArticle.category.getName()}|"></h5>
+                            </div>
+                            <div class="article-view-author-container">
+                                <p id="article-view-author" th:text="|Writer: ${viewArticle.author.nicknameWithoutCode}|"></p>
+                                <p id="article-view-author-hover" th:text="${viewArticle.author.nickname}"></p>
+                            </div>
+                            <div class="article-view-time-container">
+                                <p id="article-view-created-time"
+                                   th:text="|Created at: ${#temporals.format(viewArticle.createdAt, 'yyyy-MM-dd HH:mm')}|"></p>
+                                <span th:if="${viewArticle.updatedAt} != ${viewArticle.createdAt}">
+                                <span id="article-view-updated-time"
+                                      th:text="|Updated at: ${#temporals.format(viewArticle.updatedAt, 'yyyy-MM-dd HH:mm')}|"></span>
+                                </span>
+                            </div>
+                            <div class="article-view-content-container">
+                                <section class="article-view-section">
+                                    <div style="margin: 5px;" th:each="line : ${#strings.arraySplit(viewArticle.content, '&#10')}">
+                                        <p style="margin: 0;" th:text="${line}"></p>
+                                    </div>
+                                </section>
+                            </div>
+                            <div class="article-view-comment-container">
+                                <div class="article-view-comment-title">
+                                    <h4>comments</h4>
+                                </div>
+                                <div class="article-view-comment-body" th:if="${comments}" th:each="comment : ${comments}">
+                                    <!--                content-->
+                                    <input type="hidden" class="article-view-comment-id" th:value="${comment.id}">
+                                    <div class="article-view-comment-author">
+                                        <input type="hidden" th:value="${comment.author.id}">
+                                        <span class="material-symbols-outlined" th:if="${comment.parentId} != null">
+                                            subdirectory_arrow_right
+                                        </span>
+                                        <p class="article-view-author-nickname" th:text="${comment.author.nicknameWithoutCode}"></p>
+                                    </div>
+                                    <div class="article-view-comment-content">
+                                        <div style="margin: 5px;" th:each="line : ${#strings.arraySplit(comment.content, '&#10')}">
+                                            <p style="margin: 0;" th:text="${line}"></p>
+                                        </div>
+                                    </div>
+
+                                    <!--                modify-->
+                                    <div class="article-view-modify-comment-container">
+                                        <textarea cols="30" rows="1" class="article-view-modify-comment-textarea"
+                                                  th:text="${comment.content}"></textarea>
+                                        <button class="article-view-cancel-modify-comment-btn">cancel</button>
+                                        <button class="article-view-submit-modify-comment-btn">submit</button>
+                                    </div>
+                                    <div class="article-view-comment-button-container">
+                                        <button class="article-view-create-reply-btn">reply</button>
+                                        <button class="article-view-modify-comment-btn">modify</button>
+                                        <button class="article-view-delete-comment-btn">delete</button>
+                                    </div>
+                                </div>
+                                <div class="article-view-create-comment-container">
+                                    <div class="article-view-create-comment-title">
+                                        <h4>create comment</h4>
+                                    </div>
+                                    <div class="article-view-create-comment-body">
+                                        <input id="article-view-create-comment-author-id" type="hidden">
+                                        <p></p>
+                                        <textarea name="content" id="article-view-create-comment-content" cols="30" rows="10"
+                                                  placeholder="comment"></textarea>
+                                        <button id="article-view-create-comment-btn">create</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="article-view-reply-body">
+                                <input type="hidden" class="article-view-parent-comment-id">
+                                <div class="article-view-reply-author">
+                                    <input type="hidden">
+                                    <span class="material-symbols-outlined">
+                                        subdirectory_arrow_right
+                                    </span>
+                                    <p></p>
+                                </div>
+                                <div class="article-view-reply-content">
+                                    <textarea cols="30" rows="1" class="article-view-reply-textarea"></textarea>
+                                    <button class="article-view-cancel-reply-btn">cancel</button>
+                                    <button class="article-view-submit-reply-btn">submit</button>
+                                </div>
+                            </div>
+                        </article>
+                    </div>
+                    <div id="article-view-button-container">
+                        <button type="button" id="article-view-delete-article-btn">delete</button>
+                        <button type="button" id="article-view-modify-article-btn">modify</button>
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="article-view-reply-body">
-            <input type="hidden" class="article-view-parent-comment-id">
-            <div class="article-view-reply-author">
-                <input type="hidden">
-                <span class="material-symbols-outlined">
-                        subdirectory_arrow_right
-                    </span>
-                <p></p>
-            </div>
-            <div class="article-view-reply-content">
-                <textarea cols="30" rows="1" class="article-view-reply-textarea"></textarea>
-                <button class="article-view-cancel-reply-btn">cancel</button>
-                <button class="article-view-submit-reply-btn">submit</button>
-            </div>
-        </div>
-    </article>
-</div>
-<div id="article-view-button-container">
-    <button type="button" id="article-view-delete-article-btn">delete</button>
-    <button type="button" id="article-view-modify-article-btn">modify</button>
-</div>
+    </div>
 
+    <div class="foot-box">
+
+    </div>
+</div>
+<input type="hidden" id="error-message" th:if="${error}" th:value="${error}">
 </body>
+<script th:src="@{/js/mainPage.js}"></script>
+<script th:src="@{/js/background.js}"></script>
+<script th:src="@{/js/sidebar.js}"></script>
+<script th:src="@{/js/articleList.js}"></script>
+<script th:src="@{/js/articleView.js}"></script>
+<script th:if="${error}">
+    alert(document.getElementById('error-message').value);
+</script>
 </html>

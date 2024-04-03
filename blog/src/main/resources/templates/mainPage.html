@@ -43,7 +43,7 @@
 
         <div class="body-container">
             <div class="main-page-img">
-                    <img th:src="@{/img/backgroud-img.jpg}" alt="background-image">
+                    <img src="/img/background-img.jpg" th:src="@{/img/background-img.jpg}" alt="background-image">
             </div>
 
             <div class="contents-container">
@@ -80,22 +80,79 @@
 
 <!--                    article body-->
                     <div class="article-body" th:if="${articles}">
-                        <div th:replace="articleList.html :: body"></div>
+                        <div class="article-list-page-size-container">
+                            <label for="article-list-page-size">Articles per page: </label>
+                            <select name="Size" id="article-list-page-size" class="page-size">
+                                <option value="10">10</option>
+                                <option value="50">50</option>
+                                <option value="100">100</option>
+                            </select>
+                        </div>
+                        <div id="show-selected-category">
+                            <!--Content will be added with JS-->
+                        </div>
+                        <div id="article-list-searched-word-container">
+                            Search Keyword:
+                            <span id="article-list-searched-word">none</span>
+                        </div>
+                        <div class="article-list-container">
+                            <div class="article-list-body-wrap">
+                                <div class="article-list-id-wrap">No.</div>
+                                <div class="article-list-title-wrap">title</div>
+                                <div class="article-list-author-wrap">author</div>
+                            </div>
+                            <div class="article-list-body-container">
+                                <div class="no-article" th:if="${articles.size()} == 0">No articles</div>
+                                <div class="articles-list-body" th:if="${articles.size()} != 0" th:each="article : ${articles}">
+                                    <input type="hidden" class="article-list-article-id" th:value="${article.id}">
+                                    <div id="article-list-id-thyme"
+                                         th:text="${totalArticleSize} - ${pageSize} * (${currentPage} - 1) - ${articleStat.index}"></div>
+                                    <div class="article-list-title-thyme">
+                                        <a th:href="@{/article/{id}(id = ${article.id})}" th:text="${article.title}"></a>
+                                        <!--                <p th:text="${article.title}"></p>-->
+                                    </div>
+                                    <div id="article-list-author">
+                                        <div id="article-list-author-thyme" th:text="${article.author.getNicknameWithoutCode()}"></div>
+                                        <p class="article-list-author-hover" th:text="${article.author.nickname}"></p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="article-list-create-button-container">
+                                <button type="button" id="article-list-create-article-btn"
+                                        th:onclick="|location.href='@{/new-article}'|">new article</button>
+                            </div>
+                            <div class="article-list-page-container" th:if="${articles.size()} != 0">
+                                <input id="article-list-total-page" type="hidden" th:value="${totalPage}">
+                                <div id="article-list-page-decrease">
+                                    <span class="material-symbols-outlined">
+                                        navigate_before
+                                    </span>
+                                </div>
+                                <div class="article-list-page-number" th:each="i : ${#numbers.sequence(1, totalPage)}">
+                                    <!--            Repeat it from 1 to totalPage-->
+                                    <span th:attr="class=${i == currentPage} ? 'current-page' : 'other-page'" th:text="${i}"></span>
+                                </div>
+                                <div id="article-list-page-increase">
+                                    <span class="material-symbols-outlined">
+                                        navigate_next
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="article-list-search-article-container">
+                                <div class="article-list-search-article-body">
+                                    <select name="search-category" id="article-list-search-category" >
+                                        <option value="titleContent">title + content</option>
+                                        <option value="writer">author</option>
+                                    </select>
+                                    <input id="article-list-search-parameter" type="text">
+                                    <button type="button" id="article-list-search-btn">search</button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="article-body" th:if="${viewArticle}">
-                        <div th:replace="articleView.html :: #article-view-container"></div>
-                        <div th:replace="articleView.html :: #article-view-button-container"></div>
-                    </div>
-                    <div class="article-body" th:if="${newArticle}">
-                        <div th:replace="newArticle.html :: #new-article-container"></div>
-                        <div th:replace="newArticle.html :: #new-article-button-container"></div>
-                    </div>
-
                 </div>
-
             </div>
         </div>
-
         <div class="foot-box">
 
         </div>

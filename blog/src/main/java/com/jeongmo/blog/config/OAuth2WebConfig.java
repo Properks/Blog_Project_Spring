@@ -13,7 +13,6 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -22,7 +21,6 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.servlet.util.matcher.MvcRequestMatcher;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 
 @RequiredArgsConstructor
@@ -36,18 +34,6 @@ public class OAuth2WebConfig {
     private final TokenProvider tokenProvider;
     private final OAuth2UserCustomService oAuth2UserCustomService;
     private final RefreshTokenService refreshTokenService;
-
-    @Bean
-    WebSecurityCustomizer configure() {
-        return (web -> web.ignoring()
-//                .requestMatchers(toH2Console()) Change to my sql
-                .requestMatchers(AntPathRequestMatcher.antMatcher("/css/**")) // No "/static/**",
-                .requestMatchers(AntPathRequestMatcher.antMatcher("/img/**"))
-                .requestMatchers(AntPathRequestMatcher.antMatcher("/js/**"))
-        );
-    }
-
-    // If I input @EnableWebMvc and didn't input WebMvcConfigurer(addResourceHandler), I can't get static resource
 
     @Bean
     MvcRequestMatcher.Builder mvc(HandlerMappingIntrospector intro) {

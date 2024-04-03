@@ -8,7 +8,6 @@ import com.jeongmo.blog.dto.comment.CommentResponse;
 import com.jeongmo.blog.service.ArticleService;
 import com.jeongmo.blog.service.CategoryService;
 import com.jeongmo.blog.service.CommentService;
-import com.jeongmo.blog.util.security.SecurityUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -27,9 +26,10 @@ public class ArticleViewController {
     private final ArticleService articleService;
     private final CategoryService categoryService;
     private final CommentService commentService;
-    private final SecurityUtils securityUtils;
 
     private static final String MAIN = "mainPage";
+    private static final String ARTICLE_VIEW = "articleView";
+    private static final String NEW_ARTICLE = "newArticle";
 
     /**
      * Homepage request mapping. (Article list page)
@@ -37,7 +37,6 @@ public class ArticleViewController {
      * @param page The page of home page
      * @param size The size of articles is shown on page
      * @param model The model for thymeleaf
-     * @param authentication The authentication is got from spring security
      */
     @GetMapping("/home")
     public String mainPage(@RequestParam(required = false, defaultValue = "1") Integer page,
@@ -46,8 +45,7 @@ public class ArticleViewController {
                            @RequestParam(required = false) Long userId,
                            @RequestParam(required = false) String titleContent,
                            @RequestParam(required = false) String writer,
-                           Model model,
-                           Authentication authentication) {
+                           Model model) {
         // Set categories
         addAllCategory(model);
 
@@ -57,8 +55,6 @@ public class ArticleViewController {
                 .stream()
                 .map(ArticleViewResponse::new)
                 .toList());
-
-        securityUtils.checkAndAddLoginInfo(model, authentication);
 
         // Set article
         Collections.reverse(articles);
@@ -74,15 +70,14 @@ public class ArticleViewController {
     }
 
     @GetMapping("/article/{id}")
-    public String viewArticle(Model model, @PathVariable Long id, Authentication authentication) {
+    public String viewArticle(Model model, @PathVariable Long id) {
         // Set categories
         addAllCategory(model);
 
         ArticleViewResponse response = new ArticleViewResponse(articleService.getArticle(id));
-        securityUtils.checkAndAddLoginInfo(model, authentication);
         model.addAttribute("viewArticle", response);
         addAllComments(model, id);
-        return MAIN;
+        return ARTICLE_VIEW;
     }
 
     @GetMapping("/new-article")
@@ -97,18 +92,17 @@ public class ArticleViewController {
                 // addFlashAttribute in RedirectAttributes: input something like model.addAttribute in redirect url.
                 return "redirect:/home";
             }
-            model.addAttribute("newArticle", new ArticleViewResponse());
+            model.addAttribute(NEW_ARTICLE, new ArticleViewResponse());
         } else {
             Article foundArticle = articleService.getArticle(id);
             if (foundArticle.getAuthor().getId().equals(((User)authentication.getPrincipal()).getId())) {
-                model.addAttribute("newArticle", new ArticleViewResponse(articleService.getArticle(id)));
+                model.addAttribute(NEW_ARTICLE, new ArticleViewResponse(articleService.getArticle(id)));
             } else {
                 attributes.addFlashAttribute("error", "401 ERROR, You're not writer.");
                 return "redirect:/article/" + id;
             }
         }
-        securityUtils.checkAndAddLoginInfo(model, authentication);
-        return MAIN;
+        return NEW_ARTICLE;
     }
 
     /**
@@ -124,6 +118,11 @@ public class ArticleViewController {
         }
     }
 
+    /**
+     * Add all comment to model
+     * @param model The model
+     * @param articleId The id of article which has comment that you want
+     */
     private void addAllComments(Model model, Long articleId) {
         List<CommentResponse> comments = commentService.getCommentsWithArticle(articleId)
                 .stream()

@@ -8,6 +8,11 @@ import org.springframework.util.SerializationUtils;
 import java.util.Base64;
 
 public class CookieUtil {
+
+    private CookieUtil() {
+        throw new IllegalStateException("Utility class");
+    }
+
     public static void addCookie(HttpServletResponse response, String name, String value, int maxAge) {
         Cookie cookie = new Cookie(name, value);
         cookie.setPath("/");
