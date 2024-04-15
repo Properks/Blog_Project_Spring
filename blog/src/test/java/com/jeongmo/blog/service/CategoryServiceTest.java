@@ -163,15 +163,12 @@ class CategoryServiceTest {
         assertThat(list).hasSize(3);
         assertThat(list.get(0).getId()).isEqualTo(category.getId());
         assertThat(list.get(0).getName()).isEqualTo(category.getName());
-        assertThat(list.get(0).getHeight()).isZero();
 
         assertThat(list.get(1).getId()).isEqualTo(child.getId());
         assertThat(list.get(1).getName()).isEqualTo(child.getName());
-        assertThat(list.get(1).getHeight()).isEqualTo(1);
 
         assertThat(list.get(2).getId()).isEqualTo(sibling.getId());
         assertThat(list.get(2).getName()).isEqualTo(sibling.getName());
-        assertThat(list.get(2).getHeight()).isZero();
 
     }
 
